@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">INDRA</string>
+    <string name="title_activity_my_devices">MyDevicesActivity</string>
 </resources>
