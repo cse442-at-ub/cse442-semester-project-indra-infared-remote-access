@@ -1,5 +1,8 @@
 package com.indra.indra;
 
+import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,9 +11,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.os.Bundle;
-import android.view.MenuItem;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
          */
+
     }
 
 
@@ -85,8 +86,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_my_devices:
                 break;
             case R.id.nav_add_device:
-                break;
-
+                ToolbarFragment fragment = new ToolbarFragment();
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
         }
 
         drawer.closeDrawer(GravityCompat.START);
