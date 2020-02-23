@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="My TV Remote"
+        android:id="@+id/remote_fragment_remote_name"
+        android:textSize="30sp"
+        android:layout_centerHorizontal="true"
+        android:gravity="top"
+        android:textAlignment="center"
+        android:background="@color/colorPrimaryDark"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        />
+
+
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/remote_fragment_remote_name"
+        android:paddingTop="50dp">
+
+        
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:src="@drawable/ic_power_black"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_column="2"
+                android:backgroundTint="@android:color/holo_red_light"
+                />
+
+        </TableRow>
+        
+        
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+
+            <Button
+                android:text="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            <Button 
+                android:text="2"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            <Button
+                android:text="3"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+
+            <Button
+                android:text="4"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            <Button
+                android:text="5"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            <Button
+                android:text="6"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        </TableRow>
+        
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+
+            <Button
+                android:text="7"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            <Button
+                android:text="8"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            <Button
+                android:text="9"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+        </TableRow>
+
+
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+
+            
+            <Button
+                android:text="0"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_column="1"/>
+            
+
+        </TableRow>
+
+
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_vol_chan_up"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="VOL" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="MUTE" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_vol_chan_up"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="CH" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableBottom="@drawable/ic_vol_chan_down"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="VOL" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MENU"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableBottom="@drawable/ic_vol_chan_down"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="CH" />
+
+        </TableRow>
+
+
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_up_black"
+                    android:layout_column="1" />
+        </TableRow>
+
+
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+
+            <ImageButton
+                android:src="@drawable/ic_arrow_left_black"
+                android:layout_height="match_parent" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_enter_black"
+                android:text="ENTER"
+                android:layout_column="1" />
+
+            <ImageButton
+                android:src="@drawable/ic_arrow_right_black"
+                android:layout_height="match_parent" />
+        </TableRow>
+
+
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_down_black"
+                android:layout_column="1" />
+        </TableRow>
+
+    </TableLayout>
+
+</RelativeLayout>
