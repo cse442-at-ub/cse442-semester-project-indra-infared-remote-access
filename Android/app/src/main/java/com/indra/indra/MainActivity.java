@@ -1,5 +1,6 @@
 package com.indra.indra;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -14,7 +15,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener,
+                   AddDeviceFragment.OnFragmentInteractionListener {
 
     private DrawerLayout drawer;
 
@@ -95,5 +98,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri){
+        //you can leave this empty
     }
 }

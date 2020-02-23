@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_height="50dp"
+        android:layout_height="65dp"
         android:background="#0099ff"
         android:layout_width="match_parent"
         android:id="@+id/viewRemotesToolbar">
@@ -16,9 +16,10 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/searchText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Remote Configurations"
+                    android:text="Add New Remote Configuration"
                     android:textColor="@android:color/white"
                     android:textSize="20sp" />
 

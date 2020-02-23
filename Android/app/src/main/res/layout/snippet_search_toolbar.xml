@@ -2,7 +2,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_height="50dp"
+        android:layout_height="65dp"
         android:layout_width="match_parent"
         android:id="@+id/searchToolbar"
         android:background="@drawable/grey_border_bottom">
