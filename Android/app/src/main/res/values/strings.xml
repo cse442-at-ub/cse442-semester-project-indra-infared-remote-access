@@ -4,6 +4,82 @@
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
 
+    <string name="mock_remote">
+        #\n
+        # this config file was automatically generated\n
+# using lirc-0.8.2(iguanaIR) on Thu Jul 15 09:15:21 2010\n
+#\n
+# contributed by Ståle Nestås\n
+#\n
+# brand:  LG\n
+# model no. of remote control:\n
+# devices being controlled by this remote: LG42H3000\n
+#\n
+
+begin remote\n
+
+  name  LG_42H3000\n
+  bits           16\n
+  flags SPACE_ENC|CONST_LENGTH\n
+  eps            30\n
+  aeps          100\n
+\n
+  header       9008  4442\n
+  one           533  1652\n
+  zero          533   533\n
+  ptrail        535\n
+  repeat       9001  2204\n
+  pre_data_bits   16\n
+  pre_data       0x20DF\n
+  gap          107753\n
+  toggle_bit_mask 0x0\n
+\n
+      begin codes\n
+          KEY_POWER                0x10EF                    #  Was: power\n
+          input                    0xD02F\n
+          energy                   0xA956\n
+          tv/rad                   0x0FF0\n
+          avmode                   0x0CF3\n
+          KEY_1                    0x8877                    #  Was: 1\n
+          KEY_2                    0x48B7                    #  Was: 2\n
+          KEY_3                    0xC837                    #  Was: 3\n
+          KEY_4                    0x28D7                    #  Was: 4\n
+          KEY_5                    0xA857                    #  Was: 5\n
+          KEY_6                    0x6897                    #  Was: 6\n
+          KEY_7                    0xE817                    #  Was: 7\n
+          KEY_8                    0x18E7                    #  Was: 8\n
+          KEY_9                    0x9867                    #  Was: 9\n
+          KEY_0                    0x08F7                    #  Was: 0\n
+          KEY_LIST                 0xCA35                    #  Was: list\n
+          qview                    0x58A7\n
+          KEY_VOLUMEUP             0x40BF                    #  Was: vol+\n
+          KEY_VOLUMEDOWN           0xC03F                    #  Was: vol-\n
+          KEY_MUTE                 0x906F                    #  Was: mute\n
+          KEY_CHANNELUP            0x00FF                    #  Was: p+\n
+          KEY_CHANNELDOWN          0x807F                    #  Was: p-\n
+          KEY_UP                   0x02FD                    #  Was: up\n
+          KEY_DOWN                 0x827D                    #  Was: down\n
+          KEY_LEFT                 0xE01F                    #  Was: left\n
+          KEY_RIGHT                0x609F                    #  Was: right\n
+          KEY_OK                   0x22DD                    #  Was: ok\n
+          KEY_MENU                 0xC23D                    #  Was: menu\n
+          KEY_EXIT                 0x14EB                    #  Was: return/exit\n
+          KEY_RED                  0x4EB1                    #  Was: red\n
+          KEY_GREEN                0x8E71                    #  Was: green\n
+          KEY_YELLOW               0xC639                    #  Was: yellow\n
+          KEY_BLUE                 0x8679                    #  Was: blue\n
+          KEY_TEXT                 0x04FB                    #  Was: text\n
+          topt                     0x847B\n
+          KEY_SUBTITLE             0x9C63                    #  Was: subtitle\n
+          simplink                 0x7E81\n
+          qmenu                    0xA25D\n
+          KEY_INFO                 0x55AA                    #  Was: info\n
+          KEY_EPG                  0xD52A                    #  Was: guide\n
+          KEY_FAVORITES            0x7887                    #  Was: fav\n
+      end codes\n
+\n
+end remote\n
+    </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
