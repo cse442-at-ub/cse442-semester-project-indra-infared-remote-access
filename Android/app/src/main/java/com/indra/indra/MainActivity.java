@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -43,13 +44,15 @@ public class MainActivity extends AppCompatActivity
 
 
         //// Needs code to show the my devices fragment on startup ////
-        /*
-        if(savedInstanceState == null){
-        ..... Open My Devices Fragment ....
-        If the savedInstanceState is null then that means that the app is being loaded for the first time
-        }
 
-         */
+        if(savedInstanceState == null){
+       // If the savedInstanceState is null then that means that the app is being loaded for the first time
+            //Open MyDevicesFragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fragment_container, new MyDevicesFragment()).commit();
+
+        }
 
     }
 
@@ -62,8 +65,10 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed(){
         if(drawer.isDrawerOpen(GravityCompat.START)){
             drawer.closeDrawer(GravityCompat.START);
-        } else{
-            super.onBackPressed();
+        }
+        else{
+            drawer.openDrawer(GravityCompat.START); //changed it so back button forces sidemenu to open, removes potential glitches w back button
+            //super.onBackPressed();
         }
     }
 
@@ -87,6 +92,7 @@ public class MainActivity extends AppCompatActivity
                 transaction.replace(R.id.fragment_container, new RemoteFragment()).commit();
                 break;
             case R.id.nav_my_devices:
+                transaction.replace(R.id.fragment_container, new MyDevicesFragment()).commit();
                 break;
             case R.id.nav_add_device:
                 ToolbarFragment fragment = new ToolbarFragment();
@@ -100,7 +106,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
+
+@Override
     public void onFragmentInteraction(Uri uri){
         //you can leave this empty
     }
