@@ -23,18 +23,22 @@ public class MyDevicesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View inflatedFragment = inflater.inflate(R.layout.fragment_my_devices, container, false);
         FloatingActionButton fab = inflatedFragment.findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: Uncomment when NewDeviceActivity exists
-                //startActivity(new Intent(MyDevicesActivity.this, NewDevice.class));
+                //Used to switch between fragments in the current activity
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+                transaction.replace(R.id.fragment_container, new ToolbarFragment()).commit();
             }
         });
 
         LinearLayout sv = inflatedFragment.findViewById(R.id.devices_view);
         //DUMMY DATA
-        Device tv = new Device("Living Room TV");
-        Device lights = new Device("My Bedroom String Lights");
+        BaseDeviceClass tv = new BaseDeviceClass("Living Room TV");
+        BaseDeviceClass lights = new BaseDeviceClass("My Bedroom String Lights");
         Button tvButton = new Button(getActivity());
         Button lightsButton = new Button(getActivity());
 
