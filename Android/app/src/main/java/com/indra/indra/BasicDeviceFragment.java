@@ -14,6 +14,11 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 public class BasicDeviceFragment extends Fragment {
+    public String _deviceName;
+
+    public BasicDeviceFragment(String deviceName) {
+        _deviceName = deviceName;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -28,7 +33,7 @@ public class BasicDeviceFragment extends Fragment {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
                 //TODO: Uncomment when Settings page exists
-                //transaction.replace(R.id.fragment_container, new SettingsFragment()).commit();
+                transaction.replace(R.id.fragment_container, new SettingsFragment(_deviceName)).commit();
             }
         });
         return inflatedFragment;
