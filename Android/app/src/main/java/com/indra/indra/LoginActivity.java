@@ -7,19 +7,23 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class LoginActivity extends AppCompatActivity {
     private EditText Username;
     private EditText Password;
     private Button Login;
+    private TextView ErrorText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         Username = (EditText) findViewById(R.id.editText);
         Password = (EditText) findViewById(R.id.editText2);
-        Login = (Button) findViewById(R.id.button);
+        Login = (Button) findViewById(R.id.loginButton);
+        ErrorText = (TextView) findViewById(R.id.errorMessage);
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -34,5 +38,9 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             startActivity(intent);
         }
+        else {
+            ErrorText.setText("Incorrect login info. Try again.");
+        }
+
     }
 }
