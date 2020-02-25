@@ -38,7 +38,7 @@ public class MyDevicesFragment extends Fragment {
         LinearLayout sv = inflatedFragment.findViewById(R.id.devices_view);
         //DUMMY DATA
         BaseDeviceClass tv = new BaseDeviceClass("Living Room TV");
-        BaseDeviceClass lights = new BaseDeviceClass("My Bedroom String Lights");
+        BaseDeviceClass lights = new BaseDeviceClass("String Lights");
         Button tvButton = new Button(getActivity());
         Button lightsButton = new Button(getActivity());
 
