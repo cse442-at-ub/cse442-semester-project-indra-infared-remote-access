@@ -24,7 +24,7 @@
         android:id="@+id/deviceLabel"
         android:layout_width="296dp"
         android:layout_height="31dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="120dp"
         android:text="Device Name"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"

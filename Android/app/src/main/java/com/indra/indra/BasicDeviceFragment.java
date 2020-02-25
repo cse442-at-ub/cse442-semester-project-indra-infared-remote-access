@@ -28,7 +28,7 @@ public class BasicDeviceFragment extends Fragment {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
                 //TODO: Uncomment when Settings page exists
-                //transaction.replace(R.id.fragment_container, new SettingsFragment()).commit();
+                transaction.replace(R.id.fragment_container, new SettingsFragment()).commit();
             }
         });
         return inflatedFragment;
