@@ -1,10 +1,9 @@
-package com.indra.indra;
+package com.indra.indra.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -12,6 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.indra.indra.MainActivity;
+import com.indra.indra.R;
 
 public class BasicDeviceFragment extends Fragment {
     public String _deviceName;

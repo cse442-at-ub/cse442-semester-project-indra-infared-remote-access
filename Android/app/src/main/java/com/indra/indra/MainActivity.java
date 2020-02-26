@@ -2,7 +2,6 @@ package com.indra.indra;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -11,11 +10,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
+import com.indra.indra.fragments.AddDeviceFragment;
+import com.indra.indra.fragments.MyDevicesFragment;
+import com.indra.indra.fragments.RemoteFragment;
+import com.indra.indra.fragments.ToolbarFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
