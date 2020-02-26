@@ -45,11 +45,16 @@
         app:layout_constraintVertical_bias="0.128" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/signupButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Signup"
-        app:layout_constraintVertical_bias="0.221" />
+        app:layout_constraintVertical_bias="0.221"
+        app:layout_constraintTop_toBottomOf="@id/loginButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/errorMessage"
@@ -60,8 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/signupButton"
         app:layout_constraintVertical_bias="0.169" />
-        app:layout_constraintTop_toBottomOf="@+id/loginButton"
-        app:layout_constraintVertical_bias="0.221" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

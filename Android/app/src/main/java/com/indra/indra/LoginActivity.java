@@ -23,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Username = (EditText) findViewById(R.id.editText);
         Password = (EditText) findViewById(R.id.editText2);
-        Signup = (Button) findViewById(R.id.button3);
+        Signup = (Button) findViewById(R.id.signupButton);
         Login = (Button) findViewById(R.id.loginButton);
         ErrorText = (TextView) findViewById(R.id.errorMessage);
 
