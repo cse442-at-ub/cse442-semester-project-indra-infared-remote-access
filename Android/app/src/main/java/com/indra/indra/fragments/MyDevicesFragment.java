@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.indra.indra.MainActivity;
 import com.indra.indra.objects.BaseDeviceClass;
 import com.indra.indra.R;
 

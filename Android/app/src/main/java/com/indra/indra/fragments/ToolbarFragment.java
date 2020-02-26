@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.indra.indra.MainActivity;
 import com.indra.indra.R;
 import com.indra.indra.objects.RemoteConfig;
 import com.indra.indra.objects.RemoteConfigListAdapter;
@@ -53,7 +54,7 @@ public class ToolbarFragment extends Fragment {
         Log.d(TAG, "onCreateView: started");
 
         setAppBarState(STANDARD_APPBAR);
-
+        ((MainActivity) getActivity()).setMenuItemChecked(R.id.nav_add_device);
 
         ImageView ivSearchContact = (ImageView) view.findViewById(R.id.ivSearchIcon);
         ivSearchContact.setOnClickListener(new View.OnClickListener() {
