@@ -22,7 +22,7 @@
             android:layout_gravity="center"
             android:background="@color/colorPrimaryDark"
             android:gravity="top"
-            android:text="LIVING ROOM TV"
+            android:text="@string/living_room_tv"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="30sp"
