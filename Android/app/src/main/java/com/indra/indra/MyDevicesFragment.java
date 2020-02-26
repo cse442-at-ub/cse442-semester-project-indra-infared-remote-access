@@ -40,7 +40,7 @@ public class MyDevicesFragment extends Fragment {
         BaseDeviceClass tv = new BaseDeviceClass("Living Room TV");
         BaseDeviceClass lights = new BaseDeviceClass("String Lights");
         Button tvButton = new Button(getActivity());
-        Button lightsButton = new Button(getActivity());
+        final Button lightsButton = new Button(getActivity());
 
         tvButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +60,7 @@ public class MyDevicesFragment extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                transaction.replace(R.id.fragment_container, new BasicDeviceFragment()).commit();
+                transaction.replace(R.id.fragment_container, new BasicDeviceFragment(lights.getDeviceName())).commit();
             }
         });
 
