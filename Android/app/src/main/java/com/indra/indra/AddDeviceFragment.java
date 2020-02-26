@@ -66,6 +66,8 @@ public class AddDeviceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        ((MainActivity) getActivity()).setMenuItemChecked(R.id.nav_add_device);
         return inflater.inflate(R.layout.fragment_add_device, container, false);
     }
 
