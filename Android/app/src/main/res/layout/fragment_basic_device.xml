@@ -27,7 +27,7 @@
                 android:layout_gravity="center"
                 android:background="@color/colorPrimaryDark"
                 android:gravity="top"
-                android:text="STRING LIGHTS"
+                android:text="@string/string_lights"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textSize="30sp"
