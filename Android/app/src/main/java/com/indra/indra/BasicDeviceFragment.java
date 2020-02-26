@@ -22,6 +22,7 @@ public class BasicDeviceFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).setMenuItemChecked(R.id.nav_remote);
         View inflatedFragment = inflater.inflate(R.layout.fragment_basic_device, container, false);
 
         ImageButton settingsButton =  inflatedFragment.findViewById(R.id.settingsButton);
