@@ -2,6 +2,7 @@ package com.indra.indra;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ public class MainActivity extends AppCompatActivity
                    AddDeviceFragment.OnFragmentInteractionListener {
 
     private DrawerLayout drawer;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        this.navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.fragment_container, new MyDevicesFragment()).commit();
-
+            setMenuItemChecked(R.id.nav_my_devices);
         }
 
     }
@@ -107,8 +109,34 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    /**
+     * Helper method to set a menu item to be checked
+     * @param resourceId - The ID of the MenuItem that you would like to be checked
+     */
+    public void setMenuItemChecked(int resourceId){
+        MenuItem checked = navigationView.getCheckedItem();
+
+        if (checked == null || checked.getItemId() != resourceId){
+            navigationView.setCheckedItem(resourceId);
+        }
+    }
+
+
+    /**
+     * Helper method to uncheck all of the menu items.
+     */
+    public void uncheckAllMenuItems(){
+        MenuItem checked = navigationView.getCheckedItem();
+
+        if(checked != null){
+            checked.setChecked(false);
+        }
+    }
+
+
 @Override
     public void onFragmentInteraction(Uri uri){
         //you can leave this empty
     }
+
 }

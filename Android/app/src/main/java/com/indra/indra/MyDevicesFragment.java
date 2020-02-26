@@ -38,9 +38,9 @@ public class MyDevicesFragment extends Fragment {
         LinearLayout sv = inflatedFragment.findViewById(R.id.devices_view);
         //DUMMY DATA
         BaseDeviceClass tv = new BaseDeviceClass("Living Room TV");
-        BaseDeviceClass lights = new BaseDeviceClass("My Bedroom String Lights");
+        BaseDeviceClass lights = new BaseDeviceClass("String Lights");
         Button tvButton = new Button(getActivity());
-        Button lightsButton = new Button(getActivity());
+        final Button lightsButton = new Button(getActivity());
 
         tvButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +60,7 @@ public class MyDevicesFragment extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                transaction.replace(R.id.fragment_container, new BasicDeviceFragment()).commit();
+                transaction.replace(R.id.fragment_container, new BasicDeviceFragment(lights.getDeviceName())).commit();
             }
         });
 
