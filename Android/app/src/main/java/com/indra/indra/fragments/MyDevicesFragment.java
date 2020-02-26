@@ -1,4 +1,4 @@
-package com.indra.indra;
+package com.indra.indra.fragments;
 
 import android.os.Bundle;
 
@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.indra.indra.objects.BaseDeviceClass;
+import com.indra.indra.R;
 
 
 public class MyDevicesFragment extends Fragment {

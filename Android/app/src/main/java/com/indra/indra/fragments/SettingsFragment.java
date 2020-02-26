@@ -1,4 +1,4 @@
-package com.indra.indra;
+package com.indra.indra.fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.indra.indra.R;
 
 
 public class SettingsFragment extends Fragment {

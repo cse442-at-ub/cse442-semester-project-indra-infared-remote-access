@@ -1,4 +1,4 @@
-package com.indra.indra;
+package com.indra.indra.objects;
 
 /** Use not implemented yet, just sets out the framework for a class that defines what a "Device" is
  *

@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        tools:context=".BasicDeviceFragment"
+        tools:context=".fragments.BasicDeviceFragment"
         android:layout_gravity="center">
 
 

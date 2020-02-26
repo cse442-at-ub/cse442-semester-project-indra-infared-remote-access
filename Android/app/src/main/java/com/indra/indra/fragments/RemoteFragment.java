@@ -1,4 +1,4 @@
-package com.indra.indra;
+package com.indra.indra.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.indra.indra.MainActivity;
+import com.indra.indra.R;
 
 public class RemoteFragment extends Fragment {
 
