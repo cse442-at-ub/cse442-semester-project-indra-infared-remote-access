@@ -1,0 +1,1 @@
+This is all of the code to run the RaspberryPi client that will receive commands from the server to execute IR commands if available.
