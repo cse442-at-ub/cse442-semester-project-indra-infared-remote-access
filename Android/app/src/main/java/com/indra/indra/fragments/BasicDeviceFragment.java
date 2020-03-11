@@ -1,9 +1,11 @@
 package com.indra.indra.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,24 @@ public class BasicDeviceFragment extends Fragment {
 
                 //TODO: Uncomment when Settings page exists
                 transaction.replace(R.id.fragment_container, new SettingsFragment(_deviceName)).commit();
+            }
+        });
+
+        Button powerOnButton = inflatedFragment.findViewById(R.id.powerOnButton);
+        powerOnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).socketSendToServer("POWER ON"); //TODO: Filler until message to send is determined
+                Log.d("Connection Alerts", "Try to send POWER ON to server");
+            }
+        });
+
+        Button powerOffButton = inflatedFragment.findViewById(R.id.powerOffButton);
+        powerOnButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).socketSendToServer("POWER OFF"); //TODO: Filler until message to send is determined
+                Log.d("Connection Alerts", "Try to send POWER OFF to server");
             }
         });
         return inflatedFragment;

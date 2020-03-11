@@ -2,6 +2,7 @@ package com.indra.indra;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -18,6 +19,10 @@ import com.indra.indra.fragments.AddDeviceFragment;
 import com.indra.indra.fragments.MyDevicesFragment;
 import com.indra.indra.fragments.RemoteFragment;
 import com.indra.indra.fragments.ToolbarFragment;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
+import java.net.URISyntaxException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -25,12 +30,14 @@ public class MainActivity extends AppCompatActivity
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    private Socket clientSocket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
+        setContentView(R.layout.activity_main);
+        connectToServer();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -60,7 +67,33 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private boolean connectToServer() {
+        try {
+            clientSocket = IO.socket("127.0.0.1");
+            clientSocket.connect();
+            Log.d("Connection Alerts","Successfully connected to server");
+            return true;
+        }
+        catch (URISyntaxException e)
+        {
+            Log.d("Connection Alerts","Failed to connect to server");
+            return false;
+        }
+    }
 
+    public boolean socketSendToServer(String message) {
+        if(!clientSocket.connected()) {
+            clientSocket.close();
+            if(!connectToServer()) { //failed to reconnnect to server
+                Log.d("Connection alerts", "Failed to send message, socket not connected");
+                return false;
+            }
+        }
+        //reaching this point means socket is connected and ready to transmit
+        clientSocket.send(message);
+        Log.d("Connection alerts", "Successfully sent message to server");
+        return true;
+    }
     /**
      * Overrides the default back button behavior. If the navigation menu is open and the Android
      * back button is pressed, the navigation menu will close. Otherwise it will do its normal behavior.
