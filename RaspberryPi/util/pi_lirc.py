@@ -39,3 +39,16 @@ def send_ir_signal(remote_name:str, button:str, device:str=None) -> bool:
         return False
 
     return len(output) == 0
+
+  
+def search(brand, device):
+    output = check_output(['irdb-get','find', brand]).decode()
+    output = output.split("\n")
+    
+    op1 = [i1.split('.l', 1)[0] for i1 in output[0:-1]]
+    op2 = [i2.split('/', 1) for i2 in op1]                
+    res1 = [i[0] for i in op2]
+    res2 = [i[1] for i in op2]
+    final = [{'brand': f, 'device': c} for f,c in zip(res1,res2)]           
+    result = list(filter(lambda item: device.lower() in item['device'].lower(), final))    
+    return result 
