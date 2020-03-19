@@ -40,6 +40,7 @@ def send_ir_signal(remote_name:str, button:str, device:str=None) -> bool:
 
     return len(output) == 0
 
+  
 def search(brand, device):
     output = check_output(['irdb-get','find', brand]).decode()
     output = output.split("\n")
