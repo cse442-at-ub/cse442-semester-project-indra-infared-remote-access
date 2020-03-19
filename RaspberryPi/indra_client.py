@@ -15,9 +15,11 @@ def my_message(data):
     print("Message received from server with ", data)
 
 @sio.on('search_request')
-def disconnect(data):
+def handle_search_request(data):
     search_results = pi.search(data['brand'], data['model'])
-    sio.emit('search_results', search_results)
+
+    response = {'results': search_results, 'id': data['id']}
+    sio.emit('search_results', response)
 
 sio.connect("http://" + IP + ":" + PORT)
 sio.wait()
