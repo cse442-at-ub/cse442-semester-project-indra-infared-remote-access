@@ -16,7 +16,7 @@ def my_message(data):
 
 @sio.on('search_request')
 def disconnect(data):
-    search_results = pi.lirc_search(data['brand'], data['model'])
+    search_results = pi.search(data['brand'], data['model'])
     sio.emit('search_results', search_results)
 
 sio.connect("http://" + IP + ":" + PORT)

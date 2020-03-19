@@ -39,7 +39,3 @@ def send_ir_signal(remote_name:str, button:str, device:str=None) -> bool:
         return False
 
     return len(output) == 0
-
-
-def lirc_search(brand, model):
-    return [{'brand': 'hello', 'model': 'world'}]
