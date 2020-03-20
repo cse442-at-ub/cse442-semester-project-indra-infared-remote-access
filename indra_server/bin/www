@@ -94,7 +94,26 @@ io.attach(server);
 
 io.on("connection", (socket) => {
   console.log("client connected\n");
+
   socket.on("clicked", (id) => {
     console.log(id + " clicked.");
+  });
+
+
+  // A client has sent a search request in the form of {'brand':<brand>, 'model':<model>}
+  // This should be forwarded to the raspberry pi whose socket ID is stored in the 
+  socket.on("search_request", (data) => {
+    data['id'] = socket.id;
+    console.log(data);
+    socket.to(raspberryPiId).emit("search_request", data);
+  });
+
+
+  // Forward search results from the Pi to the requesting client
+  socket.on("search_results", (data) => {
+    const androidSocketId = data['id'];
+    const searchResults = data['results'];
+
+    socket.to(androidSocketId).emit("search_results", searchResults);
   });
 });
