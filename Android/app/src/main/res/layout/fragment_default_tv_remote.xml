@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/colorPrimaryDark">
+        android:background="@color/colorPrimaryDark"
+        >
 
         <TextView
             android:id="@+id/remote_fragment_remote_name"
@@ -53,7 +54,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="50dp"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:id="@+id/bigButtonHolder">
 
         
         <TableRow
@@ -64,6 +66,8 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:layout_column="2"
                 android:backgroundTint="@android:color/holo_red_light"
+                android:id="@+id/bPower"
+
                 />
 
         </TableRow>
@@ -75,13 +79,17 @@
 
             <Button
                 android:text="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/b1"
+                />
             <Button 
                 android:text="2"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/b2"/>
             <Button
                 android:text="3"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/b3"/>
 
         </TableRow>
 
@@ -91,13 +99,16 @@
 
             <Button
                 android:text="4"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/b4"/>
             <Button
                 android:text="5"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/b5"/>
             <Button
                 android:text="6"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/b6"/>
 
         </TableRow>
         
@@ -107,13 +118,16 @@
 
             <Button
                 android:text="7"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/b7"/>
             <Button
                 android:text="8"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/b8"/>
             <Button
                 android:text="9"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/b9"/>
 
         </TableRow>
 
@@ -126,7 +140,8 @@
             <Button
                 android:text="0"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:layout_column="1"/>
+                android:layout_column="1"
+                android:id="@+id/b0"/>
             
 
         </TableRow>
@@ -141,20 +156,23 @@
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/ic_vol_chan_up"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:text="VOL" />
+                android:text="VOL"
+                android:id="@+id/bVolUp"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:text="MUTE" />
+                android:text="MUTE"
+                android:id="@+id/bMute"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/ic_vol_chan_up"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:text="CH" />
+                android:text="CH"
+                android:id="@+id/bChUp"/>
 
         </TableRow>
 
@@ -167,20 +185,23 @@
                 android:layout_height="wrap_content"
                 android:drawableBottom="@drawable/ic_vol_chan_down"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:text="VOL" />
+                android:text="VOL"
+                android:id="@+id/bVolDown"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MENU"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/bMenu"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableBottom="@drawable/ic_vol_chan_down"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:text="CH" />
+                android:text="CH"
+                android:id="@+id/bChDown"/>
 
         </TableRow>
 
@@ -192,7 +213,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_arrow_up_black"
-                    android:layout_column="1" />
+                    android:layout_column="1"
+                    android:id="@+id/bArrowUp"/>
         </TableRow>
 
 
@@ -202,18 +224,21 @@
 
             <ImageButton
                 android:src="@drawable/ic_arrow_left_black"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:id="@+id/bArrowLeft"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/ic_enter_black"
                 android:text="ENTER"
-                android:layout_column="1" />
+                android:layout_column="1"
+                android:id="@+id/bEnter"/>
 
             <ImageButton
                 android:src="@drawable/ic_arrow_right_black"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:id="@+id/bArrowRight"/>
         </TableRow>
 
 
@@ -224,7 +249,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_arrow_down_black"
-                android:layout_column="1" />
+                android:layout_column="1"
+                android:id="@+id/bArrowDown"/>
         </TableRow>
 
     </TableLayout>

@@ -17,7 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.indra.indra.MainActivity;
 import com.indra.indra.R;
 
-public class BasicDeviceFragment extends Fragment {
+public class BasicDeviceFragment extends Fragment implements View.OnClickListener {
     public String _deviceName;
 
     public BasicDeviceFragment(String deviceName) {
@@ -37,28 +37,32 @@ public class BasicDeviceFragment extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                //TODO: Uncomment when Settings page exists
+
                 transaction.replace(R.id.fragment_container, new SettingsFragment(_deviceName)).commit();
             }
         });
 
         Button powerOnButton = inflatedFragment.findViewById(R.id.powerOnButton);
-        powerOnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity) getActivity()).socketSendToServer("POWER ON"); //TODO: Filler until message to send is determined
-                Log.d("Connection Alerts", "Try to send POWER ON to server");
-            }
-        });
+        powerOnButton.setOnClickListener(this);
 
         Button powerOffButton = inflatedFragment.findViewById(R.id.powerOffButton);
-        powerOnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity) getActivity()).socketSendToServer("POWER OFF"); //TODO: Filler until message to send is determined
-                Log.d("Connection Alerts", "Try to send POWER OFF to server");
-            }
-        });
+        powerOffButton.setOnClickListener(this);
+
         return inflatedFragment;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.powerOnButton:
+                Log.d("Connection Alerts", "Try to send POWER_ON to server");
+                ((MainActivity)getActivity()).socketSendToServer("POWER_ON"); //TODO: Filler until message to send is determined
+                break;
+
+            case R.id.powerOffButton:
+                Log.d("Connection Alerts", "Try to send POWER_OFF to server");
+                ((MainActivity)getActivity()).socketSendToServer("POWER_OFF"); //TODO: Filler until message to send is determined
+                break;
+        }
     }
 }

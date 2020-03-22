@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -26,17 +27,20 @@ import java.net.URISyntaxException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-                   AddDeviceFragment.OnFragmentInteractionListener {
+                   AddDeviceFragment.OnFragmentInteractionListener{
 
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private Socket clientSocket;
+    private String ip,port;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        ip = "12.0.0.1";
+        port = "6969";
         connectToServer();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity
 
     private boolean connectToServer() {
         try {
-            clientSocket = IO.socket("127.0.0.1");
+            clientSocket = IO.socket("https://" + ip + "/" + port);
             clientSocket.connect();
             Log.d("Connection Alerts","Successfully connected to server");
             return true;
@@ -84,14 +88,14 @@ public class MainActivity extends AppCompatActivity
     public boolean socketSendToServer(String message) {
         if(!clientSocket.connected()) {
             clientSocket.close();
-            if(!connectToServer()) { //failed to reconnnect to server
-                Log.d("Connection alerts", "Failed to send message, socket not connected");
+            if(!connectToServer()) { //attempt reconnect, it failed
+                Log.d("Connection Alerts", "Failed to send message, socket not connected");
                 return false;
             }
         }
         //reaching this point means socket is connected and ready to transmit
         clientSocket.send(message);
-        Log.d("Connection alerts", "Successfully sent message to server");
+        Log.d("Connection Alerts", "Successfully sent message to server");
         return true;
     }
     /**
