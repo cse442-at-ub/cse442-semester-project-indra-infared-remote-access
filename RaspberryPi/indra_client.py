@@ -1,8 +1,10 @@
 import socketio
 import util.pi_lirc as pi
 
-IP = 'localhost'
-PORT = '5000'
+# IP = 'cheshire.cse.buffalo.edu'
+IP = 'fathomless-brook-21291.herokuapp.com/'
+# PORT = '2680'
+PORT = '443'
 
 sio = socketio.Client()
 
@@ -12,12 +14,11 @@ def connect():
     print("Connection established!")
 
 
-@sio.event
+@sio.on('button_press')
 def my_message(data):
     print("Message received from server with ", data)
-    if data['type'] == 'IRSEND':
-        res = send_ir_signal(data['remote_name'], data['button'])
-        sio.emit('IRSEND Response', {'result': res})
+    res = send_ir_signal(data['remote'], data['button'])
+    sio.emit('IRSEND Response', {'result': res})
 
 
 @sio.on('search_request')
@@ -29,7 +30,7 @@ def handle_search_request(data):
 
 
 def main():
-    sio.connect("http://" + IP + ":" + "PORT")
+    sio.connect("http://" + IP + ":" + PORT, namespaces=['/pi'])
     sio.wait()
 
 
