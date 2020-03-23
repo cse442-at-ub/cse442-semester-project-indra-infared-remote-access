@@ -2,14 +2,13 @@ package com.indra.indra.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -36,7 +35,8 @@ public class ToolbarFragment extends Fragment {
     private int mAppBarState;
     private ListView remotesList;
 
-    EditText mSearchContacts;
+    private EditText mBrandSearchContacts, mModelSearchContacts;
+    private Button submitSearch;
 
     private AppBarLayout viewContactsBar, searchBar;
     private RemoteConfigListAdapter adapter;
@@ -49,7 +49,9 @@ public class ToolbarFragment extends Fragment {
         viewContactsBar = (AppBarLayout) view.findViewById(R.id.viewRemotesToolbar);
         searchBar = (AppBarLayout) view.findViewById(R.id.searchToolbar);
         remotesList = view.findViewById(R.id.remotesList);
-        mSearchContacts = view.findViewById(R.id.etSearchContacts);
+        mBrandSearchContacts = view.findViewById(R.id.etBrandSearchContacts);
+        mModelSearchContacts = view.findViewById(R.id.etModelSearchContacts);
+        submitSearch = view.findViewById(R.id.bSubmitSearch);
 
         Log.d(TAG, "onCreateView: started");
 
@@ -181,12 +183,29 @@ public class ToolbarFragment extends Fragment {
                 "panasonic/TNQ8E0437"};
 
         final ArrayList<RemoteConfig> contacts = new ArrayList<>();
-        for (int i=0; i < remotes.length; i++) {
+        for (int i = 0; i < remotes.length; i++) {
             contacts.add(new RemoteConfig(remotes[i]));
         }
 
         adapter = new RemoteConfigListAdapter(getActivity(), R.layout.layout_remoteconfigs_listitem, contacts, "https://");
 
+        submitSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String brandText = mBrandSearchContacts.getText().toString();
+                String modelText = mModelSearchContacts.getText().toString();
+                if (brandText.length() != 0 && modelText.length() != 0) {
+                    adapter.filter(brandText.toLowerCase(Locale.getDefault()) + "/" + modelText.toLowerCase(Locale.getDefault()));
+                } else if (brandText.length() != 0 && modelText.length() == 0) {
+                    adapter.filter(brandText.toLowerCase(Locale.getDefault()));
+                } else if (brandText.length() == 0 && modelText.length() != 0) {
+                    adapter.filter(modelText.toLowerCase(Locale.getDefault()));
+                }
+                setAppBarState(0);
+            }
+        });
+
+        /*
         mSearchContacts.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -204,6 +223,7 @@ public class ToolbarFragment extends Fragment {
 
             }
         });
+         */
 
         remotesList.setAdapter(adapter);
 
