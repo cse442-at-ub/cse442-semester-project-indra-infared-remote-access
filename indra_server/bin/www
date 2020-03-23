@@ -116,4 +116,14 @@ io.on("connection", (socket) => {
 
     socket.to(androidSocketId).emit("search_results", searchResults);
   });
+
+  // extract remote and button info received from android app
+  var remote, button;
+  socket.on("button_press", (data) =>{
+    remote = data["remote"];
+    button = data["button"];
+
+    // emit pi_receive event which the pi client will use to receive remote and button press info
+    socket.emit("pi_receive", {"remote": remote, "button": button});
+  });
 });
