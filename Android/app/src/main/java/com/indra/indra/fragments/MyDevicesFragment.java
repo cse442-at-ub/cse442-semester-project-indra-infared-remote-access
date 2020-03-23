@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.indra.indra.MainActivity;
 import com.indra.indra.objects.BaseDeviceClass;
 import com.indra.indra.R;
 
@@ -39,8 +40,8 @@ public class MyDevicesFragment extends Fragment {
 
         LinearLayout sv = inflatedFragment.findViewById(R.id.devices_view);
         //DUMMY DATA
-        final BaseDeviceClass tv = new BaseDeviceClass(getString(R.string.living_room_tv), "SamsungBN59-01054A");
-        final BaseDeviceClass lights = new BaseDeviceClass(getString(R.string.string_lights), "DUMMY DATA");
+        BaseDeviceClass tv = new BaseDeviceClass(getString(R.string.living_room_tv));
+        final BaseDeviceClass lights = new BaseDeviceClass(getString(R.string.string_lights));
         Button tvButton = new Button(getActivity());
         final Button lightsButton = new Button(getActivity());
 
@@ -51,8 +52,7 @@ public class MyDevicesFragment extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                Fragment nextActiveFragment = new BasicDeviceFragment(tv, R.layout.fragment_default_tv_remote);
-                transaction.replace(R.id.fragment_container, nextActiveFragment).commit();
+                transaction.replace(R.id.fragment_container, new RemoteFragment()).commit();
             }
         });
 
@@ -63,13 +63,12 @@ public class MyDevicesFragment extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                Fragment nextActiveFragment = new BasicDeviceFragment(lights, R.layout.fragment_basic_device);
-                transaction.replace(R.id.fragment_container, nextActiveFragment).commit();
+                transaction.replace(R.id.fragment_container, new BasicDeviceFragment(lights.getDeviceName())).commit();
             }
         });
 
-        tvButton.setText(tv.getDisplayName());
-        lightsButton.setText(lights.getDisplayName());
+        tvButton.setText(tv.getDeviceName());
+        lightsButton.setText(lights.getDeviceName());
 
         sv.addView(tvButton);
         sv.addView(lightsButton);
