@@ -116,7 +116,12 @@ io.on("connection", (socket) => {
 
     socket.to(androidSocketId).emit("search_results", searchResults);
   });
+});
 
+// namespace pi connects to
+const pi = io.of("/pi");
+pi.on("connection", (socket) => {
+  console.log("pi connected!\n");
   // extract remote and button info received from android app
   var remote, button;
   socket.on("button_press", (data) =>{
@@ -124,6 +129,6 @@ io.on("connection", (socket) => {
     button = data["button"];
 
     // emit pi_receive event which the pi client will use to receive remote and button press info
-    socket.emit("pi_receive", {"remote": remote, "button": button});
+    socket.emit("button_press", {"remote": remote, "button": button});
   });
 });
