@@ -4,6 +4,20 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$USER_HOME$/AndroidStudioProjects/stonks/Frontend" />
+        <option name="gradleHome" value="C:/Gradle/gradle-5.4.1" />
+        <option name="modules">
+          <set>
+            <option value="$USER_HOME$/AndroidStudioProjects/stonks/Frontend" />
+            <option value="$USER_HOME$/AndroidStudioProjects/stonks/Frontend/app" />
+          </set>
+        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
+        <option name="testRunner" value="PLATFORM" />
+        <option name="useQualifiedModuleNames" value="true" />
+      </GradleProjectSettings>
+      <GradleProjectSettings>
         <compositeConfiguration>
           <compositeBuild compositeDefinitionSource="SCRIPT" />
         </compositeConfiguration>
