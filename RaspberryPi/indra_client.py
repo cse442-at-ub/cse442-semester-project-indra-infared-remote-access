@@ -3,7 +3,7 @@ import json
 import util.pi_lirc as pi
 
 # IP = 'cheshire.cse.buffalo.edu'
-IP = 'fathomless-brook-21291.herokuapp.com/'
+#IP = 'fathomless-brook-21291.herokuapp.com/'
 
 # PORT = '2680'
 # PORT = '443'
@@ -12,7 +12,7 @@ IP = 'fathomless-brook-21291.herokuapp.com/'
 # IP = '192.168.1.15'
 # PORT = '8000'
 
-# IP = 'indra-272100.appspot.com'
+IP = 'indra-272100.appspot.com'
 
 sio = socketio.Client()
 
@@ -35,9 +35,10 @@ def my_message(data):
 
 @sio.on('search_request')
 def handle_search_request(data):
-    data = json.loads(data)
+    if type(data) == str:
+        data = json.loads(data)
     search_results = pi.search(data['brand'], data['model'])
-
+    print('search_request:', search_results)
     response = {'results': search_results, 'id': data['id']}
     sio.emit('search_results', response)
 
