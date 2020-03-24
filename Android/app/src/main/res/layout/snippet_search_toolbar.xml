@@ -2,42 +2,63 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:layout_height="65dp"
-        android:layout_width="match_parent"
         android:id="@+id/searchToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@drawable/grey_border_bottom">
 
         <Toolbar
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="103dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                >
 
 
                 <ImageView
+                    android:id="@+id/ivBackArrow"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/ic_back_button"
                     android:layout_marginEnd="15dp"
-                    android:id="@+id/ivBackArrow" />
+                    android:src="@drawable/ic_back_button" />
 
                 <EditText
-                    android:layout_width="match_parent"
+                    android:id="@+id/etBrandSearchContacts"
+                    style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox.Dense"
+                    android:layout_width="170dp"
                     android:layout_height="wrap_content"
-                    android:hint="Search Item"
-                    android:textColor="@android:color/black"
-                    android:background="@null"
-                    android:textSize="20sp"
                     android:layout_toRightOf="@id/ivBackArrow"
-                    android:id="@+id/etSearchContacts"/>
+                    android:background="@null"
+                    android:hint="Brand Name"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/etModelSearchContacts"
+                    style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox.Dense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="27dp"
+                    android:layout_toRightOf="@id/etBrandSearchContacts"
+                    android:background="@null"
+                    android:hint="Model Number"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp" />
 
 
             </RelativeLayout>
 
 
         </Toolbar>
+
+        <Button
+            android:id="@+id/bSubmitSearch"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
