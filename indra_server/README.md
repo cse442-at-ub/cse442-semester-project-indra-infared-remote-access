@@ -1,7 +1,8 @@
 ## Server Details
-`cheshire.cse.buffalo.edu`
+dev file: `bin/www`
 
-**PORT**: `2680`
+`cheshire.cse.buffalo.edu`
+PORT: `2680`
 
 ### Heroku host:
 `https://fathomless-brook-21291.herokuapp.com/`
