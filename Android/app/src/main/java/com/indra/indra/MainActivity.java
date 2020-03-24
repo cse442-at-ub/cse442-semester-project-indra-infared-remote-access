@@ -45,11 +45,14 @@ public class MainActivity extends AppCompatActivity
 //        ip = "12.0.0.1";
 //        ip = "192.168.1.4";
 //        ip = "cheshire.cse.buffalo.edu";
-        ip = "fathomless-brook-21291.herokuapp.com";
+//        ip = "fathomless-brook-21291.herokuapp.com";
 //        port = "6969";
 //        port = "8000";
 //        port= "2680";
-        port = "443";
+//        port = "443";
+
+        ip = "indra-272100.appspot.com";
+
         connectToServer();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -82,7 +85,8 @@ public class MainActivity extends AppCompatActivity
 
     private boolean connectToServer() {
         try {
-            clientSocket = IO.socket("https://" + ip + ":" + port);
+//            clientSocket = IO.socket("https://" + ip + ":" + port);
+            clientSocket = IO.socket("https://" + ip);
             clientSocket.connect();
 
             Log.d("Connection Alerts","Successfully connected to server " + clientSocket.connected());
