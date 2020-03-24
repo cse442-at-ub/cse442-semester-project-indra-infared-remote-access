@@ -172,7 +172,7 @@
                 android:id="@+id/bVolUp"/>
 
             <com.indra.indra.objects.buttons.RemoteButton
-                app:lircName="KEY_MENU"
+                app:lircName="KEY_MUTE"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
