@@ -29,10 +29,11 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 
         inflatedFragment.findViewById(R.id.settingsButton).setOnClickListener(this);
         //all touchable objects in remote get assigned to onClick() method as listener (all buttons)
-        //ArrayList<View> allButtons = ((inflatedFragment.findViewById(R.id.bigButtonHolder))).getTouchables();
-        //for(View b : allButtons) {
-        //   b.setOnClickListener(this);
-        //}
+        ArrayList<View> allButtons = ((TableLayout)(inflatedFragment.findViewById(R.id.bigButtonHolder))).getTouchables();
+        for(View b : allButtons) {
+           b.setOnClickListener(this);
+        }
+
 
         return inflatedFragment;
     }
@@ -48,13 +49,14 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
             //any button on default remote frag pressed that's not the settings button is on remote
             //remote id for those buttons is expected to be an accurate message for what we need to send
             //TODO: split into different cases
-            //case R.id.bPower:
-                //Log.d("Connection Alerts", "Try to send " + "POWER" + " to server");
-                //((MainActivity)getActivity()).socketSendToServer("POWER"); //TODO: Filler until message to send is determined
-           //     break;
+
+            case R.id.bPower:
+                Log.d("Connection Alerts", "Try to send " + "POWER" + " to server");
+                ((MainActivity)getActivity()).socketSendToServer("POWER"); //TODO: Filler until message to send is determined
+                break;
             default:
-                //Log.d("Connection Alerts", "Try to send " + "OTHER INPUT" + " to server");
-                //((MainActivity)getActivity()).socketSendToServer("OTHER INPUT"); //TODO: Filler until message to send is determined
+                Log.d("Connection Alerts", "Try to send " + "OTHER INPUT" + " to server");
+                ((MainActivity)getActivity()).socketSendToServer("OTHER INPUT"); //TODO: Filler until message to send is determined
                 break;
         }
     }
