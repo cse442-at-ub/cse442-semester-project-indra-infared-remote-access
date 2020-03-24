@@ -3,6 +3,7 @@ eventlet.monkey_patch()
 
 from flask import Flask, request
 from flask_socketio import SocketIO, emit
+import json
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -23,8 +24,9 @@ def press(data):
 def search_request(data):
     if type(data) == str:
         data = json.loads(data)
-
-    request_data = {'remote': data['remote'], 'button': data['button'], 'id': request.id}
+    print('search_request:', data)
+    print('search_request from:', request.sid)
+    request_data = {'model': data['model'], 'brand': data['brand'], 'id': request.sid}
     emit('search_request', request_data, broadcast=True)
 
 
@@ -36,6 +38,7 @@ def search_results(data):
     search_results = data['results']
     recipient_id = data['id']
 
+    print('search_results to:', recipient_id)
     emit('search_results', search_results, room=recipient_id)
 
 
