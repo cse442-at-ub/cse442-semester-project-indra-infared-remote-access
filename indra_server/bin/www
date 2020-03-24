@@ -11,8 +11,8 @@ var http = require('http');
 /**
  * Get port from environment and store in Express.
  */
-
-var port = normalizePort(process.env.PORT || '3000');
+const PORT = '2680';  // change value to the desired port
+var port = normalizePort(process.env.PORT || PORT);
 app.set('port', port);
 
 /**
@@ -92,12 +92,21 @@ function onListening() {
 var io = require("socket.io")();
 io.attach(server);
 
-io.on("connection", (socket) => {
-  console.log("client connected\n");
+// var raspberryPiId
+// // namespace pi connects to
+// const pi = io.of("/pi");
+// pi.on("connection", (socket) => {
+//   console.log("pi connected!\n");
+  
+//   raspberryPiId = socket.id;
+// });
 
-  socket.on("clicked", (id) => {
-    console.log(id + " clicked.");
-  });
+io.on("connection", (socket) => {
+  console.log("client connected, id: " + socket.id);
+
+  // socket.on("clicked", (id) => {
+  //   console.log(id + " clicked.");
+  // });
 
 
   // A client has sent a search request in the form of {'brand':<brand>, 'model':<model>}
@@ -116,4 +125,16 @@ io.on("connection", (socket) => {
 
     socket.to(androidSocketId).emit("search_results", searchResults);
   });
+
+  // extract remote and button info received from android app
+  var remote, button;
+  socket.on("button_press", (data) =>{
+    data = JSON.parse(data);
+    remote = data["remote"];
+    button = data["button"];
+
+    // emit button_press event to all connected clients
+    io.emit("button_press", {"remote": remote, "button": button});
+  });
 });
+
