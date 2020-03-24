@@ -3,7 +3,7 @@ import json
 import util.pi_lirc as pi
 
 # IP = 'cheshire.cse.buffalo.edu'
-# IP = 'fathomless-brook-21291.herokuapp.com/'
+IP = 'fathomless-brook-21291.herokuapp.com/'
 
 # PORT = '2680'
 # PORT = '443'
@@ -12,7 +12,7 @@ import util.pi_lirc as pi
 # IP = '192.168.1.15'
 # PORT = '8000'
 
-IP = 'indra-272100.appspot.com'
+# IP = 'indra-272100.appspot.com'
 
 sio = socketio.Client()
 
