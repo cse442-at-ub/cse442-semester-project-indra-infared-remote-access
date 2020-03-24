@@ -21,12 +21,18 @@ def press(data):
 
 @socketio.on('search_request')
 def search_request(data):
+    if type(data) == str:
+        data = json.loads(data)
+
     request_data = {'remote': data['remote'], 'button': data['button'], 'id': request.id}
     emit('search_request', request_data, broadcast=True)
 
 
 @socketio.on('search_results')
 def search_results(data):
+    if type(data) == str:
+        data = json.loads(data)
+
     search_results = data['results']
     recipient_id = data['id']
 
