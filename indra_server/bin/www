@@ -92,21 +92,21 @@ function onListening() {
 var io = require("socket.io")();
 io.attach(server);
 
-var raspberryPiId
-// namespace pi connects to
-const pi = io.of("/pi");
-pi.on("connection", (socket) => {
-  console.log("pi connected!\n");
+// var raspberryPiId
+// // namespace pi connects to
+// const pi = io.of("/pi");
+// pi.on("connection", (socket) => {
+//   console.log("pi connected!\n");
   
-  raspberryPiId = socket.id;
-});
+//   raspberryPiId = socket.id;
+// });
 
 io.on("connection", (socket) => {
-  console.log("client connected\n");
+  console.log("client connected, id: " + socket.id);
 
-  socket.on("clicked", (id) => {
-    console.log(id + " clicked.");
-  });
+  // socket.on("clicked", (id) => {
+  //   console.log(id + " clicked.");
+  // });
 
 
   // A client has sent a search request in the form of {'brand':<brand>, 'model':<model>}
@@ -129,11 +129,12 @@ io.on("connection", (socket) => {
   // extract remote and button info received from android app
   var remote, button;
   socket.on("button_press", (data) =>{
+    data = JSON.parse(data);
     remote = data["remote"];
     button = data["button"];
 
-    // emit pi_receive event which the pi client will use to receive remote and button press info
-    socket.to(raspberryPiId).emit("button_press", {"remote": remote, "button": button});
+    // emit button_press event to all connected clients
+    io.emit("button_press", {"remote": remote, "button": button});
   });
 });
 
