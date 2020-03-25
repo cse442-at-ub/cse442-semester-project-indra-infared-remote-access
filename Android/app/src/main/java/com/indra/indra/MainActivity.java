@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity
 //        ip = "12.0.0.1";
 //        ip = "192.168.1.4";
 //        ip = "cheshire.cse.buffalo.edu";
+
         ip = "fathomless-brook-21291.herokuapp.com";
 //        port = "6969";
 //        port = "8000";
