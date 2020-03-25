@@ -61,8 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="163dp"
             android:layout_gravity="top"
-            android:text="Power ON"
-            />
+            android:text="Power ON" />
 
     <Button
         android:id="@+id/powerOffButton"
@@ -70,6 +69,5 @@
         android:layout_width="match_parent"
         android:layout_height="163dp"
         android:layout_gravity="end"
-        android:text="Power OFF"
-        />
+        android:text="Power OFF" />
 </LinearLayout>

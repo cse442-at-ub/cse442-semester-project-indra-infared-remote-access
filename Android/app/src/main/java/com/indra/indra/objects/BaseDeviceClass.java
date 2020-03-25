@@ -4,28 +4,22 @@ package com.indra.indra.objects;
  *
  */
 public class BaseDeviceClass {
-    private String displayName;
-    private String lircName;
+    private String deviceName;
     private int deviceId;
 
-    public BaseDeviceClass(String displayName, String lircName) {
-        this.displayName = displayName;
-        this.lircName = lircName;
+    public BaseDeviceClass(String name) {
+        deviceName = name;
         deviceId = 1000; //Will be automatically generated eventually to keep track of devices
     }
 
-    public String getDisplayName() {
-        return displayName;
+    public String getDeviceName() {
+        return deviceName;
     }
 
-    public void setDisplayName(String name) {
-        displayName = name;
+    public void setDeviceName(String name) {
+        deviceName = name;
     }
     public int getDeviceId() {
         return deviceId;
-    }
-
-    public String getLircName() {
-        return lircName;
     }
 }
