@@ -114,16 +114,16 @@ io.on("connection", (socket) => {
   socket.on("search_request", (data) => {
     data['id'] = socket.id;
     console.log(data);
-    socket.to(raspberryPiId).emit("search_request", data);
+    io.emit("search_request", data);
   });
 
 
   // Forward search results from the Pi to the requesting client
   socket.on("search_results", (data) => {
-    const androidSocketId = data['id'];
+    //const androidSocketId = data['id']; // not needed right now
     const searchResults = data['results'];
 
-    socket.to(androidSocketId).emit("search_results", searchResults);
+    io.emit("search_results", searchResults);
   });
 
   // extract remote and button info received from android app
