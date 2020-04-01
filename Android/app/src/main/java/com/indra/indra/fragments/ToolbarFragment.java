@@ -32,7 +32,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -50,12 +49,13 @@ public class ToolbarFragment extends Fragment {
 
     private AppBarLayout viewContactsBar, searchBar;
     private RemoteConfigListAdapter adapter;
+    private View view;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_viewremotes, container, false);
+        view = inflater.inflate(R.layout.fragment_viewremotes, container, false);
         viewContactsBar = (AppBarLayout) view.findViewById(R.id.viewRemotesToolbar);
         searchBar = (AppBarLayout) view.findViewById(R.id.searchToolbar);
         remotesList = view.findViewById(R.id.remotesList);
@@ -207,18 +207,7 @@ public class ToolbarFragment extends Fragment {
             public void onClick(View view) {
                 String brandText = mBrandSearchContacts.getText().toString().toLowerCase(Locale.getDefault());
                 String modelText = mModelSearchContacts.getText().toString().toLowerCase(Locale.getDefault());
-                //adapter.clear();
-//                String brandText = mBrandSearchContacts.getText().toString();
-//                String modelText = mModelSearchContacts.getText().toString();
-//                String fullText = "";
-//                if (brandText.length() != 0 && modelText.length() != 0) {
-//                    //adapter.filter(brandText.toLowerCase(Locale.getDefault()) + "/" + modelText.toLowerCase(Locale.getDefault()));
-//                    fullText = brandText.toLowerCase(Locale.getDefault()) + "/" + modelText.toLowerCase(Locale.getDefault());
-//                } else if (brandText.length() != 0 && modelText.length() == 0) {
-//                   fullText = brandText.toLowerCase(Locale.getDefault());
-//                } else if (brandText.length() == 0 && modelText.length() != 0) {
-//                    fullText = modelText.toLowerCase(Locale.getDefault());
-//                }
+
                 //send search text to server
                 Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
 
@@ -228,13 +217,14 @@ public class ToolbarFragment extends Fragment {
 
                 JSONObject message = new JSONObject(jsonMap);
                 clientSocket.emit("search_request", message.toString());
-                Log.d("SOCKETIO", "Request emitted");
+                Log.d("Search", "Request emitted");
 
                 //returning object from server
+
                 clientSocket.on("search_results", new Emitter.Listener() {
                     @Override
                     public void call(Object... args) {
-                        Log.d("SOCKETIO", "Recieved response from server");
+                        Log.d("Search", "Recieved response from server");
                         try {
 
                             JSONArray ja = (JSONArray) args[0];
@@ -246,8 +236,7 @@ public class ToolbarFragment extends Fragment {
                                 contacts.add(new RemoteConfig(b + " " + m));
                             }
                             adapter = new RemoteConfigListAdapter(getActivity(), R.layout.layout_remoteconfigs_listitem, contacts, "https://");
-                            //updateRemoteList(contacts);
-                            //setAppBarState(0);
+                            updateRemoteList();
                         }
                         catch(JSONException e) {
                             e.printStackTrace();
@@ -255,20 +244,26 @@ public class ToolbarFragment extends Fragment {
 
                     }
                 });
-                //setAppBarState(0);
-                updateRemoteList();
+                updateRemoteList(); //calls update twice to force UI thread to refresh remote list, avoid explicit multithreading
                 setAppBarState(0);
             }
 
 
         });
 
-        //remotesList.setAdapter(adapter);
-
     }
 
-    public void updateRemoteList() {
-        remotesList.setAdapter(adapter);
+    /* Asks UI thread to update the remote list after response is successfully found
+    *  Without this, handler thread will throw a conflict as it request the same resource as UI thread
+     */
+    public void updateRemoteList()
+    {
+       getActivity().runOnUiThread(new Runnable() { //asks UI thread to change UI so handler thread does not conflict
+           @Override
+           public void run() {
+               remotesList.setAdapter(adapter);
+           }
+       });
     }
 
 
