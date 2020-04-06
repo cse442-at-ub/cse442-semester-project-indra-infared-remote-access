@@ -2,17 +2,16 @@ import socketio
 import json
 import util.pi_lirc as pi
 
+
 # IP = 'cheshire.cse.buffalo.edu'
-#IP = 'fathomless-brook-21291.herokuapp.com/'
-
 # PORT = '2680'
-# PORT = '443'
 
 
-# IP = '192.168.1.15'
-# PORT = '8000'
+IP = 'fathomless-brook-21291.herokuapp.com/'
+# IP = 'indra-272100.appspot.com'
 
-IP = 'indra-272100.appspot.com'
+# IP = "localhost"
+# PORT = "5000"
 
 sio = socketio.Client()
 
@@ -43,8 +42,33 @@ def handle_search_request(data):
     sio.emit('search_results', response)
 
 
+@sio.on('file_request')
+def handle_file_request(data):
+    output = {'success': False, 'id': data['id']}
+
+    if type(data) == str:
+        data = json.loads(data)
+    
+    brand = data['brand']
+    model = data['model']
+
+    success, filename = pi.download_lirc_config(brand, model)
+
+    if success:
+        file_contents = pi.read_lirc_config_file(filename)
+
+        if file_contents is not None:
+            output['success'] = True
+            output['file_contents'] = file_contents
+
+
+    sio.emit('file_response', output)
+
+
+
+
 def main():
-    # sio.connect("https://" + IP + ":" + PORT)
+    # sio.connect("http://" + IP + ":" + PORT)
     sio.connect('https://' + IP)
     sio.wait()
 

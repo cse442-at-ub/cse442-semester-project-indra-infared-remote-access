@@ -1,4 +1,11 @@
 from subprocess import check_output
+import shutil
+import dbus
+import time
+import os
+
+
+LIRC_CONF_DIR = '/etc/lirc/lircd.conf.d'
 
 
 
@@ -52,3 +59,76 @@ def search(brand, device):
     final = [{'brand': f, 'device': c} for f,c in zip(res1,res2)]           
     result = list(filter(lambda item: device.lower() in item['device'].lower(), final))    
     return result 
+
+
+def download_lirc_config(brand: str, device: str, dst_dir=LIRC_CONF_DIR ) -> (bool, str):
+    
+    lookup = brand + '/' + device + '.lircd.conf'
+    output = check_output(['irdb-get', 'download', lookup]).decode()
+
+    if 'Cannot' in output:
+        return (False, None)
+    
+    filename = output.split('as')[-1].strip()
+
+    try:
+        resulting_location = shutil.move('./' + filename, dst_dir)
+        pass
+    except shutil.Error:
+        return (True, filename)
+        pass
+
+    output = (False, None)
+    if dst_dir in resulting_location and restart_lirc_service():
+        output = (True, filename)
+    
+    return output
+
+
+def restart_lirc_service():
+    """
+    Requires authorization to interact with systemd. Therefore, run your piece of code with 'sudo' privileges.
+    """
+
+    sysbus = dbus.SystemBus()
+    systemd = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
+    manager = dbus.Interface(systemd, 'org.freedesktop.systemd1.Manager')
+
+    output = manager.RestartUnit('lircd.service', 'fail')
+
+    time.sleep(.5)
+
+    return is_lirc_running(sysbus)
+
+
+def is_lirc_running(sysbus=dbus.SystemBus()):
+    """
+    Requires authorization to interact with systemd. Therefore, run your piece of code with 'sudo' privileges.
+    """
+
+    systemd = sysbus.get_object('org.freedesktop.systemd1', '/org/freedesktop/systemd1')
+    manager = dbus.Interface(systemd, 'org.freedesktop.systemd1.Manager')
+
+    service = sysbus.get_object('org.freedesktop.systemd1', object_path=manager.GetUnit('lircd.service'))
+    interface = dbus.Interface(service, dbus_interface='org.freedesktop.DBus.Properties')
+
+    return interface.Get('org.freedesktop.systemd1.Unit', 'ActiveState') == 'active'
+
+
+def read_lirc_config_file(filename, src_dir=LIRC_CONF_DIR):
+    path_to_file = src_dir + '/' + filename
+    output = None
+
+    if os.path.exists(path_to_file):
+        with open(path_to_file, 'r') as lirc_f:
+            try:
+                output = lirc_f.read()              
+                pass
+            except:
+                output = None
+                pass
+            finally:
+                lirc_f.close()
+
+    return output
+        
