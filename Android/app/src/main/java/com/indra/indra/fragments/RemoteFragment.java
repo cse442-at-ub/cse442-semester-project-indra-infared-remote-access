@@ -38,6 +38,7 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
         return inflatedFragment;
     }
 
+    //DEAD METHOD, this is not called
     @Override
     public void onClick(View v) {
         switch(v.getId()) {
@@ -48,15 +49,15 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
                 break;
             //any button on default remote frag pressed that's not the settings button is on remote
             //remote id for those buttons is expected to be an accurate message for what we need to send
-            //TODO: split into different cases
+
 
             case R.id.bPower:
                 Log.d("Connection Alerts", "Try to send " + "POWER" + " to server");
-                ((MainActivity)getActivity()).socketSendToServer("POWER"); //TODO: Filler until message to send is determined
+                ((MainActivity)getActivity()).socketSendToServer("POWER");
                 break;
             default:
                 Log.d("Connection Alerts", "Try to send " + "OTHER INPUT" + " to server");
-                ((MainActivity)getActivity()).socketSendToServer("OTHER INPUT"); //TODO: Filler until message to send is determined
+                ((MainActivity)getActivity()).socketSendToServer("OTHER INPUT");
                 break;
         }
     }

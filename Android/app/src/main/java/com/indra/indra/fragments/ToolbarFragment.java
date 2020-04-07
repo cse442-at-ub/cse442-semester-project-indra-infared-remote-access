@@ -18,13 +18,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.github.nkzawa.emitter.Emitter;
 import com.google.android.material.appbar.AppBarLayout;
 import com.indra.indra.MainActivity;
 import com.indra.indra.R;
 import com.indra.indra.objects.RemoteConfig;
 import com.indra.indra.objects.RemoteConfigListAdapter;
 
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class ToolbarFragment extends Fragment {
@@ -40,12 +49,13 @@ public class ToolbarFragment extends Fragment {
 
     private AppBarLayout viewContactsBar, searchBar;
     private RemoteConfigListAdapter adapter;
+    private View view;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_viewremotes, container, false);
+        view = inflater.inflate(R.layout.fragment_viewremotes, container, false);
         viewContactsBar = (AppBarLayout) view.findViewById(R.id.viewRemotesToolbar);
         searchBar = (AppBarLayout) view.findViewById(R.id.searchToolbar);
         remotesList = view.findViewById(R.id.remotesList);
@@ -123,6 +133,7 @@ public class ToolbarFragment extends Fragment {
             } catch (NullPointerException e) {
                 Log.d(TAG, "setAppBaeState: NullPointerException: " + e);
             }
+
         } else if (mAppBarState == SEARCH_APPBAR) {
             viewContactsBar.setVisibility(View.GONE);
             searchBar.setVisibility(View.VISIBLE);
@@ -139,7 +150,8 @@ public class ToolbarFragment extends Fragment {
     }
 
     private void setupContactList() {
-
+/*
+        //dummy list, currently default list displayed in search until search is executed
         String[] remotes = {"directv/G051204",
                 "directv/H23",
                 "directv/HD20-100",
@@ -182,51 +194,77 @@ public class ToolbarFragment extends Fragment {
                 "panasonic/TNQ2637",
                 "panasonic/TNQ8E0437"};
 
+
         final ArrayList<RemoteConfig> contacts = new ArrayList<>();
         for (int i = 0; i < remotes.length; i++) {
             contacts.add(new RemoteConfig(remotes[i]));
         }
 
-        adapter = new RemoteConfigListAdapter(getActivity(), R.layout.layout_remoteconfigs_listitem, contacts, "https://");
 
+*/
         submitSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String brandText = mBrandSearchContacts.getText().toString();
-                String modelText = mModelSearchContacts.getText().toString();
-                if (brandText.length() != 0 && modelText.length() != 0) {
-                    adapter.filter(brandText.toLowerCase(Locale.getDefault()) + "/" + modelText.toLowerCase(Locale.getDefault()));
-                } else if (brandText.length() != 0 && modelText.length() == 0) {
-                    adapter.filter(brandText.toLowerCase(Locale.getDefault()));
-                } else if (brandText.length() == 0 && modelText.length() != 0) {
-                    adapter.filter(modelText.toLowerCase(Locale.getDefault()));
-                }
+                String brandText = mBrandSearchContacts.getText().toString().toLowerCase(Locale.getDefault());
+                String modelText = mModelSearchContacts.getText().toString().toLowerCase(Locale.getDefault());
+
+                //send search text to server
+                Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
+
+                HashMap<String, String> jsonMap = new HashMap<>();
+                jsonMap.put("brand", brandText);
+                jsonMap.put("model", modelText);
+
+                JSONObject message = new JSONObject(jsonMap);
+                clientSocket.emit("search_request", message.toString());
+                Log.d("Search", "Request emitted");
+
+                //returning object from server
+
+                clientSocket.on("search_results", new Emitter.Listener() {
+                    @Override
+                    public void call(Object... args) {
+                        Log.d("Search", "Recieved response from server");
+                        try {
+
+                            JSONArray ja = (JSONArray) args[0];
+                            final ArrayList<RemoteConfig> contacts = new ArrayList<>();
+                            for(int i = 0; i < ja.length(); i++) {
+                                JSONObject d = ja.getJSONObject(i);
+                                String b = (String) d.get("brand");
+                                String m = (String) d.get("device");
+                                contacts.add(new RemoteConfig(b + " " + m));
+                            }
+                            adapter = new RemoteConfigListAdapter(getActivity(), R.layout.layout_remoteconfigs_listitem, contacts, "https://");
+                            updateRemoteList();
+                        }
+                        catch(JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+                updateRemoteList(); //calls update twice to force UI thread to refresh remote list, avoid explicit multithreading
                 setAppBarState(0);
             }
+
+
         });
-
-        /*
-        mSearchContacts.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                String text = mSearchContacts.getText().toString().toLowerCase(Locale.getDefault());
-                adapter.filter(text);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-         */
-
-        remotesList.setAdapter(adapter);
 
     }
+
+    /* Asks UI thread to update the remote list after response is successfully found
+    *  Without this, handler thread will throw a conflict as it request the same resource as UI thread
+     */
+    public void updateRemoteList()
+    {
+       getActivity().runOnUiThread(new Runnable() { //asks UI thread to change UI so handler thread does not conflict
+           @Override
+           public void run() {
+               remotesList.setAdapter(adapter);
+           }
+       });
+    }
+
 
 }
