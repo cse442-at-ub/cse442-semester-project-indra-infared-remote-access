@@ -36,20 +36,10 @@ def my_message(data):
 def handle_search_request(data):
     if type(data) == str:
         data = json.loads(data)
-    config = pi.search(data['brand'], data['model'])
+    search_results = pi.search(data['brand'], data['model'])
 
-    ### parse config into list of buttons
-    buttons = {}
-    start = 'begin codes'
-    end = 'end codes'
-    config = (config[config.find(start)+len(start):config.rfind(end)]).splitlines()
-
-    for line in config:
-        new_line = (line[:line.rfind('#')]).split()
-        if new_line:
-            buttons[new_line[0]] = new_line[1]
-
-    response = {'results': json.dumps(buttons), 'id': data['id']}
+    print('search_results', search_results)
+    response = {'results': search_results, 'id': data['id']}
     sio.emit('search_results', response)
 
 
@@ -66,14 +56,24 @@ def handle_file_request(data):
     success, filename = pi.download_lirc_config(brand, model)
 
     if success:
-        file_contents = pi.read_lirc_config_file(filename)
+        config = pi.read_lirc_config_file(filename)
 
-        if file_contents is not None:
-            output['success'] = True
-            output['file_contents'] = file_contents
+        ### parse config into list of buttons
+        buttons = {}
+        start = 'begin codes'
+        end = 'end codes'
+        config = (config[config.find(start)+len(start):config.rfind(end)]).splitlines()
 
+        for line in config:
+            new_line = (line[:line.rfind('#')]).split()
+            if new_line:
+                buttons[new_line[0]] = new_line[1]
 
-    sio.emit('file_response', output)
+        # if file_contents is not None:
+        #     output['success'] = True
+        #     output['file_contents'] = file_contents
+
+    sio.emit('file_response', buttons)
 
 
 
