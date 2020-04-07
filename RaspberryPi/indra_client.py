@@ -37,9 +37,20 @@ def my_message(data):
 def handle_search_request(data):
     if type(data) == str:
         data = json.loads(data)
-    search_results = pi.search(data['brand'], data['model'])
-    print('search_request:', search_results)
-    response = {'results': search_results, 'id': data['id']}
+    config = pi.search(data['brand'], data['model'])
+
+    ### parse config into list of buttons
+    buttons = {}
+    start = 'begin codes'
+    end = 'end codes'
+    config = (config[config.find(start)+len(start):config.rfind(end)]).splitlines()
+
+    for line in config:
+        new_line = (line[:line.rfind('#')]).split()
+        if new_line:
+            buttons[new_line[0]] = new_line[1]
+
+    response = {'results': json.dumps(buttons), 'id': data['id']}
     sio.emit('search_results', response)
 
 
