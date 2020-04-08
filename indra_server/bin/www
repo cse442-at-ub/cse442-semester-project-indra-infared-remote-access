@@ -137,10 +137,10 @@ io.on("connection", (socket) => {
     io.emit("button_press", {"remote": remote, "button": button});
   });
 
-  //--Handle LIRC config file request
+  //---Handle LIRC config file request
   var brand, model, id;
 
-  // listen on file_request event from app and extract brand and model
+  //-listen on file_request event from app and extract brand and model
   socket.on("file_request", (data)=> {
     data = JSON.parse(data);
     brand = data["brand"];
@@ -156,7 +156,7 @@ io.on("connection", (socket) => {
     });
   });
 
-  // handle config file response from pi and emit to app
+  //-handle config file response from pi and emit to app
   socket.on("file_response", (data) => {
     data = JSON.parse(data);
 
