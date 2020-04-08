@@ -58,6 +58,9 @@ def handle_file_request(data):
     if success:
         config = pi.read_lirc_config_file(filename)
 
+        ### Grab name
+        name = (config[config.find("name")+len("name"):config.rfind("bits")]).splitlines()[0].split()
+
         ### parse config into list of buttons
         buttons = {}
         start = 'begin codes'
@@ -69,11 +72,16 @@ def handle_file_request(data):
             if new_line:
                 buttons[new_line[0]] = new_line[1]
 
+        resp = {
+            "name": name,
+            "buttons": buttons
+        }
+
         # if file_contents is not None:
         #     output['success'] = True
         #     output['file_contents'] = file_contents
 
-    sio.emit('file_response', buttons)
+    sio.emit('file_response', resp)
 
 
 
