@@ -37,7 +37,8 @@ def handle_search_request(data):
     if type(data) == str:
         data = json.loads(data)
     search_results = pi.search(data['brand'], data['model'])
-    print('search_request:', search_results)
+
+    print('search_results', search_results)
     response = {'results': search_results, 'id': data['id']}
     sio.emit('search_results', response)
 
@@ -55,14 +56,32 @@ def handle_file_request(data):
     success, filename = pi.download_lirc_config(brand, model)
 
     if success:
-        file_contents = pi.read_lirc_config_file(filename)
+        config = pi.read_lirc_config_file(filename)
 
-        if file_contents is not None:
-            output['success'] = True
-            output['file_contents'] = file_contents
+        ### Grab name
+        name = (config[config.find("name")+len("name"):config.rfind("bits")]).splitlines()[0].split()
 
+        ### parse config into list of buttons
+        buttons = {}
+        start = 'begin codes'
+        end = 'end codes'
+        config = (config[config.find(start)+len(start):config.rfind(end)]).splitlines()
 
-    sio.emit('file_response', output)
+        for line in config:
+            new_line = (line[:line.rfind('#')]).split()
+            if new_line:
+                buttons[new_line[0]] = new_line[1]
+
+        resp = {
+            "name": name,
+            "buttons": buttons
+        }
+
+        # if file_contents is not None:
+        #     output['success'] = True
+        #     output['file_contents'] = file_contents
+
+    sio.emit('file_response', resp)
 
 
 
