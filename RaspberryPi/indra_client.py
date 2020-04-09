@@ -5,14 +5,13 @@ import util.pi_lirc as pi
 # IP = 'cheshire.cse.buffalo.edu'
 # PORT = '2680'
 
-IP = 'fathomless-brook-21291.herokuapp.com/'
-#IP = 'indra-272100.appspot.com'
+# IP = 'fathomless-brook-21291.herokuapp.com/'
+IP = 'indra-272100.appspot.com'
 
 # IP = "localhost"
 # PORT = "5000"
 
 sio = socketio.Client()
-
 
 @sio.event
 def connect():
@@ -21,15 +20,14 @@ def connect():
 
 @sio.on('button_press')
 def my_message(data):
-    global current_time
     if type(data) == str:
         data = json.loads(data)
 
     print("Message received from server with ", data)
     print(data['remote'])
-    res = pi.send_ir_signal(data['remote'], data['button'])
-    sio.emit('IRSEND Response', {'result': res})
-
+    res = pi.send_ir_signal(data['remote'], data['button'], method=data['method'])
+    
+    
 @sio.on('search_request')
 def handle_search_request(data):
     if type(data) == str:

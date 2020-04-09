@@ -132,9 +132,10 @@ io.on("connection", (socket) => {
     data = JSON.parse(data);
     remote = data["remote"];
     button = data["button"];
+    method = data["method"];
 
     // emit button_press event to all connected clients
-    io.emit("button_press", {"remote": remote, "button": button});
+    io.emit("button_press", {"remote": remote, "button": button, "method": method});
   });
 });
 

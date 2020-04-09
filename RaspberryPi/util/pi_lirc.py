@@ -3,13 +3,16 @@ import shutil
 import dbus
 import time
 import os
+from threading import Thread
+from queue import Queue
+
 
 
 LIRC_CONF_DIR = '/etc/lirc/lircd.conf.d'
 
 
 
-def send_ir_signal(remote_name:str, button:str, device:str=None) -> bool:
+def send_ir_signal(remote_name:str, button:str, method:str="ONCE", device:str=None) -> bool:
     """Sends an IR signal with LIRC.
 
     Attempts to use LIRC to send the IR command associated with the provided remote_name and button.
@@ -24,6 +27,9 @@ def send_ir_signal(remote_name:str, button:str, device:str=None) -> bool:
     button : str
         Name of the button to 'press'
 
+    method : str, optional
+        Should be "ONCE", "START", or "STOP" but will default to "ONCE"
+
     device : str, optional
         The device that LIRC will use to send the command. If None then the default device is used. 
         It is highly recommended that you always call this with the LIRC device that is used 
@@ -37,7 +43,7 @@ def send_ir_signal(remote_name:str, button:str, device:str=None) -> bool:
     command = []
 
     if not device:
-        command = ['irsend', 'SEND_ONCE', remote_name, button]
+        command = ['irsend', 'SEND_' + method, remote_name, button]
 
     output = None
     try:
@@ -131,4 +137,37 @@ def read_lirc_config_file(filename, src_dir=LIRC_CONF_DIR):
                 lirc_f.close()
 
     return output
-        
+
+
+class IrSendDaemon(Thread):
+
+    def __init__(self, min_delay):
+        self.command_q = Queue(maxsize=0)
+        self.min_delay = min_delay
+        self.running = False
+        super().__init__()
+
+
+    def start(self):
+        self.running = True
+        super().setDaemon(True)
+        super().start()
+
+
+    def run(self):
+
+        current_time = round(time.monotonic() * 1000)
+        while self.running:
+            remote, button = self.command_q.get()
+            send_ir_signal(remote, button)
+            print(round(time.monotonic() * 1000) - current_time)
+            current_time = round(time.monotonic() * 1000)
+            time.sleep(.001 * self.min_delay)
+
+    
+    def add_to_queue(self, remote, button):
+        self.command_q.put((remote, button), block=False)
+
+
+
+    
