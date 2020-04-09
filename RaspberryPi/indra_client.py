@@ -5,11 +5,11 @@ import util.pi_lirc as pi
 # IP = 'cheshire.cse.buffalo.edu'
 # PORT = '2680'
 
-# IP = 'fathomless-brook-21291.herokuapp.com/'
+IP = 'fathomless-brook-21291.herokuapp.com/'
 #IP = 'indra-272100.appspot.com'
 
-IP = "localhost"
-PORT = "5000"
+# IP = "localhost"
+# PORT = "5000"
 
 sio = socketio.Client()
 
@@ -93,8 +93,8 @@ def handle_file_request(data):
 
 
 def main():
-    sio.connect("http://" + IP + ":" + PORT)
-    # sio.connect('https://' + IP)
+    # sio.connect("http://" + IP + ":" + PORT)
+    sio.connect('https://' + IP)
     sio.wait()
 
 
