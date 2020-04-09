@@ -46,13 +46,13 @@ public class MainActivity extends AppCompatActivity
 //        ip = "192.168.1.4";
 //        ip = "cheshire.cse.buffalo.edu";
 
-        ip = "fathomless-brook-21291.herokuapp.com";
+//        ip = "fathomless-brook-21291.herokuapp.com";
 //        port = "6969";
 //        port = "8000";
 //        port= "2680";
 //        port = "443";
 
-//        ip = "indra-272100.appspot.com";
+        ip = "indra-272100.appspot.com";
 
         connectToServer();
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -187,6 +187,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void lockNavigationDrawer() {
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    public void unlockNavigationDrawer(){
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
 
 @Override
     public void onFragmentInteraction(Uri uri){
