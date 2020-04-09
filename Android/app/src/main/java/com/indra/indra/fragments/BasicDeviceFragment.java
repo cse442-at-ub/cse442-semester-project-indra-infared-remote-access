@@ -2,10 +2,13 @@ package com.indra.indra.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -20,6 +23,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import com.indra.indra.MainActivity;
 import com.indra.indra.R;
 import com.indra.indra.objects.BaseDeviceClass;
+import com.indra.indra.objects.RemoteButtonHandlerDaemon;
 import com.indra.indra.objects.buttons.RemoteButton;
 import com.indra.indra.objects.buttons.RemoteImageButton;
 
@@ -28,10 +32,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class BasicDeviceFragment extends Fragment implements View.OnClickListener {
+public class BasicDeviceFragment extends Fragment implements View.OnTouchListener {
     public String _deviceName;
     private BaseDeviceClass baseDevice;
     private int layoutId;
+    private RemoteButtonHandlerDaemon remoteButtonDaemon;
 
     public BasicDeviceFragment(BaseDeviceClass basicDevice, int layoutId) {
         _deviceName = basicDevice.getDisplayName();
@@ -40,12 +45,13 @@ public class BasicDeviceFragment extends Fragment implements View.OnClickListene
     }
 
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setMenuItemChecked(R.id.nav_remote);
         View inflatedFragment = inflater.inflate(layoutId, container, false);
+        MainActivity activity = (MainActivity)getActivity();
+        this.remoteButtonDaemon = RemoteButtonHandlerDaemon.getInstance(activity.getClientSocket(), activity);
 
         ImageButton settingsButton =  inflatedFragment.findViewById(R.id.settingsButton);
         settingsButton.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +72,7 @@ public class BasicDeviceFragment extends Fragment implements View.OnClickListene
         for(View button : buttons){
 
             if(button instanceof RemoteImageButton || button instanceof RemoteButton){
-                button.setOnClickListener(this);
+                button.setOnTouchListener(this);
             }
 
         }
@@ -75,29 +81,29 @@ public class BasicDeviceFragment extends Fragment implements View.OnClickListene
         return inflatedFragment;
     }
 
+
     @Override
-    public void onClick(View v) {
-        String buttonCode = v instanceof RemoteButton ? ((RemoteButton)v).getLircName() : ((RemoteImageButton) v).getLircName();
+    public boolean onTouch(View v, MotionEvent event) {
 
-        clickButton(buttonCode);
+        int action = event.getAction();
+
+        if(action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP){
+            Handler daemonHandler = remoteButtonDaemon.getButtonEventMessageHandler();
+            String lircName = baseDevice.getLircName();
+            String buttonName = v instanceof RemoteButton ? ((RemoteButton)v).getLircName() : ((RemoteImageButton) v).getLircName();
+
+            Bundle buttonPressBundle = new Bundle();
+            buttonPressBundle.putString(RemoteButtonHandlerDaemon.REMOTE_NAME_KEY, lircName);
+            buttonPressBundle.putString(RemoteButtonHandlerDaemon.BUTTON_NAME_KEY, buttonName);
+            buttonPressBundle.putInt(RemoteButtonHandlerDaemon.BUTTON_EVENT_KEY, action);
+            Message msg = daemonHandler.obtainMessage();
+            msg.setData(buttonPressBundle);
+            daemonHandler.sendMessage(msg);
+            return false;
+        }
+
+
+        return false;
     }
 
-
-    private void clickButton(String buttonCode){
-        Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
-
-        HashMap<String, String> jsonMap = new HashMap<>();
-        jsonMap.put("remote", baseDevice.getLircName());
-        jsonMap.put("button", buttonCode);
-
-        JSONObject message = new JSONObject(jsonMap);
-        clientSocket.emit("button_press", message.toString());
-        Log.d("SOCKETIO", message.toString());
-        vibrateOnClick();
-    }
-
-    private void vibrateOnClick(){
-        Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate(VibrationEffect.createOneShot(20, 255));
-    }
 }
