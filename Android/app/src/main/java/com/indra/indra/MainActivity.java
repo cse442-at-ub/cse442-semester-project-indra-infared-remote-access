@@ -46,13 +46,13 @@ public class MainActivity extends AppCompatActivity
 //        ip = "192.168.1.4";
 //        ip = "cheshire.cse.buffalo.edu";
 
-//        ip = "fathomless-brook-21291.herokuapp.com";
+        ip = "fathomless-brook-21291.herokuapp.com";
 //        port = "6969";
 //        port = "8000";
 //        port= "2680";
 //        port = "443";
 
-        ip = "indra-272100.appspot.com";
+//        ip = "indra-272100.appspot.com";
 
         connectToServer();
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public boolean socketSendToServer(String message) {
+    public boolean socketSendToServer(String event, String message) {
         if(!clientSocket.connected()) {
             clientSocket.close();
             if(!connectToServer()) { //attempt reconnect, it failed
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         //reaching this point means socket is connected and ready to transmit
-        clientSocket.send(message);
+        clientSocket.emit(event, message);
         Log.d("Connection Alerts", "Successfully sent message to server");
         return true;
     }

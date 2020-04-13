@@ -95,9 +95,10 @@ public class ToolbarFragment extends Fragment {
                 RemoteConfig yo = (RemoteConfig) parent.getItemAtPosition(position);
                 Log.d(TAG, "listClick: clicked : " + yo.getName());
 
+                //AddDeviceFragment needs
                 //Used to switch between fragments in the current activity
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.fragment_container, new AddDeviceFragment());
+                ft.replace(R.id.fragment_container, new AddDeviceFragment(yo.getName()));
                 ft.addToBackStack(null);
                 ft.commit();
             }
