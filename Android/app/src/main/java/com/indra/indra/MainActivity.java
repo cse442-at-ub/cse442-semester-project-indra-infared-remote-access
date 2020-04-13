@@ -211,4 +211,6 @@ public class MainActivity extends AppCompatActivity
         return clientSocket;
     }
 
+    public DatabaseUtil getDb() {return db; }
+
 }

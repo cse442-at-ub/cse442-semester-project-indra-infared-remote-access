@@ -5,18 +5,22 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
 import com.indra.indra.MainActivity;
 import com.indra.indra.R;
-import com.indra.indra.objects.buttons.RemoteButton;
+import com.indra.indra.models.RemoteButtonModel;
+import com.indra.indra.models.RemoteModel;
+import com.indra.indra.ui.buttons.RemoteButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +44,7 @@ public class AddDeviceFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
+    private TextView remoteConfigText;
 
     // TODO: Rename and change types of parameters
     private String deviceName;
@@ -81,9 +86,11 @@ public class AddDeviceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View inflatedFragment = inflater.inflate(R.layout.fragment_adddevice, container, false);
+        View inflatedFragment = inflater.inflate(R.layout.fragment_add_device, container, false);
 
-        final TextView remoteConfigText = inflatedFragment.findViewById(configText);
+        remoteConfigText = inflatedFragment.findViewById(configText);
+        final Button bAddDevice = inflatedFragment.findViewById(addDevice);
+
         //send search text to server
         Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
 
@@ -106,12 +113,35 @@ public class AddDeviceFragment extends Fragment {
                 try {
                     JSONObject jo = (JSONObject) args[0];
                     JSONObject contents = (JSONObject) jo.get("file_contents");
-                    String lircFileName = (String)((JSONArray) contents.get("name")).get(0);
+                    final String lircFileName = (String)((JSONArray) contents.get("name")).get(0);
                     JSONObject buttonsList = (JSONObject) contents.get("buttons");
-                    Map<String,String> _buttons = toMap(buttonsList);
+                    final ArrayList<RemoteButtonModel> rbuttons = new ArrayList<RemoteButtonModel>();
+
+                    Iterator<String> keysItr = buttonsList.keys();
+                    while(keysItr.hasNext()) {
+                         String key = keysItr.next();
+                         rbuttons.add(new RemoteButtonModel(key,key,000,000));
+                    }
 
                     Log.d("FileSearch", "Finished processing response");
-                    //remoteConfigText.setText("Device name: " + lircFileName + "/n" + "Buttons: " + "/n" + _buttons.toString());
+                    updateRemoteConfig(lircFileName, rbuttons);
+                    bAddDevice.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            RemoteModel rm = new RemoteModel(deviceName, lircFileName);
+                            rm.setButtonModels(rbuttons);
+                            ((MainActivity) getActivity()).getDb().insertDeviceToDatabase(rm);
+                            getActivity().runOnUiThread(new Runnable() { //asks UI thread to change UI so handler thread does not conflict
+                                @Override
+                                public void run() {
+                                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                    ft.replace(R.id.fragment_container, new MyDevicesFragment());
+                                    ft.addToBackStack(null);
+                                    ft.commit();
+                                }
+                            });
+                        }
+                    });
                 }
                 catch(JSONException e) {
                     e.printStackTrace();
@@ -125,17 +155,14 @@ public class AddDeviceFragment extends Fragment {
         return inflatedFragment;
     }
 
-    public static Map<String, String> toMap(JSONObject object) throws JSONException { //used to map buttons list
-        Map<String, String> map = new HashMap<String, String>();
-
-        Iterator<String> keysItr = object.keys();
-        while(keysItr.hasNext()) {
-            String key = keysItr.next();
-            Object value = object.get(key);
-
-            map.put(key, (String) value);
-        }
-        return map;
+    public void updateRemoteConfig(final String lircFileN, final ArrayList<RemoteButtonModel> rb)
+    {
+        getActivity().runOnUiThread(new Runnable() { //asks UI thread to change UI so handler thread does not conflict
+            @Override
+            public void run() {
+                remoteConfigText.setText("Device name: " + lircFileN + "/n" + "Buttons: " + "/n" + rb.toString());
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
