@@ -15,8 +15,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.indra.indra.objects.BaseDeviceClass;
+import com.indra.indra.db.DatabaseUtil;
+import com.indra.indra.models.RemoteModel;
 import com.indra.indra.R;
+import com.indra.indra.ui.buttons.MyDeviceMenuButton;
+
+import java.util.ArrayList;
 
 
 public class MyDevicesFragment extends Fragment {
@@ -39,8 +43,8 @@ public class MyDevicesFragment extends Fragment {
 
         LinearLayout sv = inflatedFragment.findViewById(R.id.devices_view);
         //DUMMY DATA
-        final BaseDeviceClass tv = new BaseDeviceClass(getString(R.string.living_room_tv), "SamsungBN59-01054A");
-        final BaseDeviceClass lights = new BaseDeviceClass(getString(R.string.string_lights), "DUMMY DATA");
+        final RemoteModel tv = new RemoteModel(getString(R.string.living_room_tv), "SamsungBN59-01054A");
+        final RemoteModel lights = new RemoteModel(getString(R.string.string_lights), "DUMMY DATA");
         Button tvButton = new Button(getActivity());
         final Button lightsButton = new Button(getActivity());
 
@@ -73,6 +77,29 @@ public class MyDevicesFragment extends Fragment {
 
         sv.addView(tvButton);
         sv.addView(lightsButton);
+
+        DatabaseUtil util = new DatabaseUtil(getActivity());
+
+        ArrayList<RemoteModel> remoteModels = util.getDevicesForUser(DatabaseUtil.DEFAULT_USER);
+
+        for(final RemoteModel deviceClass : remoteModels){
+            MyDeviceMenuButton b = new MyDeviceMenuButton(deviceClass, getActivity());
+
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+                    Fragment nextActiveFragment = new BasicDeviceFragment(deviceClass, R.layout.fragment_basic_device);
+                    transaction.replace(R.id.fragment_container, nextActiveFragment).commit();
+                }
+            });
+
+//            b.setText(deviceClass.getDisplayName());
+
+            sv.addView(b);
+        }
 
         return inflatedFragment;
     }
