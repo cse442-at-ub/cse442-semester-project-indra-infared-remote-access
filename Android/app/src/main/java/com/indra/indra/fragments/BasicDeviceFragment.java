@@ -1,12 +1,8 @@
 package com.indra.indra.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,26 +15,22 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.github.nkzawa.socketio.client.Socket;
 import com.indra.indra.MainActivity;
 import com.indra.indra.R;
-import com.indra.indra.objects.BaseDeviceClass;
+import com.indra.indra.models.RemoteModel;
 import com.indra.indra.objects.RemoteButtonHandlerDaemon;
-import com.indra.indra.objects.buttons.RemoteButton;
-import com.indra.indra.objects.buttons.RemoteImageButton;
-
-import org.json.JSONObject;
+import com.indra.indra.ui.buttons.RemoteButton;
+import com.indra.indra.ui.buttons.RemoteImageButton;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class BasicDeviceFragment extends Fragment implements View.OnTouchListener {
     public String _deviceName;
-    private BaseDeviceClass baseDevice;
+    private RemoteModel baseDevice;
     private int layoutId;
     private RemoteButtonHandlerDaemon remoteButtonDaemon;
 
-    public BasicDeviceFragment(BaseDeviceClass basicDevice, int layoutId) {
+    public BasicDeviceFragment(RemoteModel basicDevice, int layoutId) {
         _deviceName = basicDevice.getDisplayName();
         this.baseDevice = basicDevice;
         this.layoutId = layoutId;
