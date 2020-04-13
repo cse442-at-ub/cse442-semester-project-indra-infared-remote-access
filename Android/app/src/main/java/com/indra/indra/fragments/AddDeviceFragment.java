@@ -88,8 +88,8 @@ public class AddDeviceFragment extends Fragment {
         // Inflate the layout for this fragment
         View inflatedFragment = inflater.inflate(R.layout.fragment_add_device, container, false);
 
-        remoteConfigText = inflatedFragment.findViewById(configText);
-        final Button bAddDevice = inflatedFragment.findViewById(addDevice);
+        remoteConfigText = inflatedFragment.findViewById(R.id.configText);
+        final Button bAddDevice = inflatedFragment.findViewById(R.id.addDevice);
 
         //send search text to server
         Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
