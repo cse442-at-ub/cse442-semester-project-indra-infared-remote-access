@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public boolean socketSendToServer(String message) {
+    public boolean socketSendToServer(String event, String message) {
         if(!clientSocket.connected()) {
             clientSocket.close();
             if(!connectToServer()) { //attempt reconnect, it failed
@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         //reaching this point means socket is connected and ready to transmit
-        clientSocket.send(message);
+        clientSocket.emit(event, message);
         Log.d("Connection Alerts", "Successfully sent message to server");
         return true;
     }

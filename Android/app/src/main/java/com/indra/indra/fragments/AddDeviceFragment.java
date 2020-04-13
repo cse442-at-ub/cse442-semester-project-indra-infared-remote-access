@@ -6,12 +6,26 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Socket;
 import com.indra.indra.MainActivity;
 import com.indra.indra.R;
+import com.indra.indra.objects.buttons.RemoteButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**
@@ -26,32 +40,31 @@ public class AddDeviceFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String deviceName;
+
 
     private OnFragmentInteractionListener mListener;
 
-    public AddDeviceFragment() {
+    public AddDeviceFragment(String deviceN) {
         // Required empty public constructor
+        deviceName = deviceN;
     }
+
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param deviceName name of device being added
      * @return A new instance of fragment AddDeviceFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddDeviceFragment newInstance(String param1, String param2) {
-        AddDeviceFragment fragment = new AddDeviceFragment();
+    public static AddDeviceFragment newInstance(String deviceName) {
+        AddDeviceFragment fragment = new AddDeviceFragment(deviceName);
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_PARAM1, deviceName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,8 +73,7 @@ public class AddDeviceFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            deviceName = getArguments().getString(ARG_PARAM1);
         }
     }
 
@@ -69,10 +81,61 @@ public class AddDeviceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View inflatedFragment = inflater.inflate(R.layout.fragment_add_device, container, false);
+        View inflatedFragment = inflater.inflate(R.layout.fragment_adddevice, container, false);
+
+        final TextView remoteConfigText = inflatedFragment.findViewById(configText);
+        //send search text to server
+        Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
+
+        HashMap<String, String> jsonMap = new HashMap<>();
+        String[] inputs = deviceName.split("\\s+");
+
+        jsonMap.put("brand", inputs[0]);
+        jsonMap.put("model", inputs[1]);
+        jsonMap.put("id", clientSocket.id());
+
+        JSONObject message = new JSONObject(jsonMap);
+        clientSocket.emit("file_request", message.toString());
+        Log.d("FileSearch", "Request emitted");
+
+        //recieve response
+        clientSocket.on("file_response", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.d("FileSearch", "Recieved response from server");
+                try {
+                    JSONObject jo = (JSONObject) args[0];
+                    JSONObject contents = (JSONObject) jo.get("file_contents");
+                    String lircFileName = (String)((JSONArray) contents.get("name")).get(0);
+                    JSONObject buttonsList = (JSONObject) contents.get("buttons");
+                    Map<String,String> _buttons = toMap(buttonsList);
+
+                    Log.d("FileSearch", "Finished processing response");
+                    //remoteConfigText.setText("Device name: " + lircFileName + "/n" + "Buttons: " + "/n" + _buttons.toString());
+                }
+                catch(JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
 
         ((MainActivity) getActivity()).setMenuItemChecked(R.id.nav_add_device);
         return inflatedFragment;
+    }
+
+    public static Map<String, String> toMap(JSONObject object) throws JSONException { //used to map buttons list
+        Map<String, String> map = new HashMap<String, String>();
+
+        Iterator<String> keysItr = object.keys();
+        while(keysItr.hasNext()) {
+            String key = keysItr.next();
+            Object value = object.get(key);
+
+            map.put(key, (String) value);
+        }
+        return map;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

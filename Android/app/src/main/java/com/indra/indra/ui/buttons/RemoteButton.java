@@ -16,6 +16,10 @@ public class RemoteButton extends AppCompatButton {
         super(context);
         lircName = "";
     }
+    public RemoteButton(Context context, String lircN) {
+        super(context);
+        lircName = lircN;
+    }
 
     public RemoteButton(Context context, AttributeSet attrs) {
         super(context, attrs);
