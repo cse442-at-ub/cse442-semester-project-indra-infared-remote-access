@@ -1,4 +1,4 @@
-package com.indra.indra.objects.buttons;
+package com.indra.indra.ui.buttons;
 
 import android.content.Context;
 import android.content.res.TypedArray;
