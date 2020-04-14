@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.indra.indra.db.DatabaseUtil;
+import com.indra.indra.models.RemoteButtonModel;
 import com.indra.indra.models.RemoteModel;
 import com.indra.indra.R;
 import com.indra.indra.ui.buttons.MyDeviceMenuButton;
@@ -90,6 +92,12 @@ public class MyDevicesFragment extends Fragment {
                 public void onClick(View v) {
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+                    Log.i("REMOTE_NAME", deviceClass.getLircName());
+
+                    for(RemoteButtonModel model : deviceClass.getButtonModels()){
+                        Log.i("BUTTON NAME", model.getLircName());
+                    }
 
                     Fragment nextActiveFragment = new BasicDeviceFragment(deviceClass, R.layout.fragment_basic_device);
                     transaction.replace(R.id.fragment_container, nextActiveFragment).commit();

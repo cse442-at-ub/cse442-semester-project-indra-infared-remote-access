@@ -116,6 +116,10 @@ public class DatabaseUtil extends SQLiteOpenHelper {
 
         device.setDeviceId(id);
 
+        for(RemoteButtonModel buttonModel : device.getButtonModels()){
+            buttonModel.setRemoteId(id);
+        }
+
         if(!insertButtons(device.getButtonModels())){
             String deleteWhere = REMOTE_COLUMN_ID + "=?";
             String[] whereArgs = new String[]{Long.toString(device.getDeviceId())};
@@ -130,7 +134,7 @@ public class DatabaseUtil extends SQLiteOpenHelper {
     }
 
 
-    public boolean insertButtons(ArrayList<RemoteButtonModel> buttonModels){
+    private boolean insertButtons(ArrayList<RemoteButtonModel> buttonModels){
         SQLiteDatabase db = this.getWritableDatabase();
 
         for(RemoteButtonModel model : buttonModels){
