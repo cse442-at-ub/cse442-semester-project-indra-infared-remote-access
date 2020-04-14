@@ -35,7 +35,7 @@ public class RemoteButtonModel {
         return remoteId;
     }
 
-    public void setRemoteId(int remoteId) {
+    public void setRemoteId(long remoteId) {
         this.remoteId = remoteId;
     }
 

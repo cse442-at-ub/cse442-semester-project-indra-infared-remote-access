@@ -2,12 +2,14 @@ package com.indra.indra;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Button;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.indra.indra.db.DatabaseUtil;
+import com.indra.indra.models.RemoteButtonModel;
 import com.indra.indra.models.RemoteModel;
 
 import org.junit.Assert;
@@ -69,6 +71,20 @@ public class ExampleInstrumentedTest {
         util.resetTables();
         devices = util.getDevicesForUser(DatabaseUtil.DEFAULT_USER);
         Assert.assertEquals(0, devices.size());
+    }
+
+    @Test
+    public void testInsertingRemoteWithButtons(){
+        RemoteModel model = new RemoteModel("TEST", "TEST", DatabaseUtil.DEFAULT_USER, -1);
+        model.addButtonModel(new RemoteButtonModel("LIRC", "LIRC", -1, -1));
+
+        util.resetTables();
+        util.insertDeviceToDatabase(model);
+
+        RemoteModel retrieved = util.getDevicesForUser(DatabaseUtil.DEFAULT_USER).get(0);
+        Assert.assertEquals(1, retrieved.getButtonModels().size());
+
+        util.resetTables();
     }
 
 //    @After
