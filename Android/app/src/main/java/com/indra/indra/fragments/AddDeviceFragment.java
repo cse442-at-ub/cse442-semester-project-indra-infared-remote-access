@@ -90,7 +90,6 @@ public class AddDeviceFragment extends Fragment {
 
         remoteConfigText = inflatedFragment.findViewById(R.id.configText);
         final Button bAddDevice = inflatedFragment.findViewById(R.id.addDevice);
-
         //send search text to server
         Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
 
@@ -160,7 +159,11 @@ public class AddDeviceFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() { //asks UI thread to change UI so handler thread does not conflict
             @Override
             public void run() {
-                remoteConfigText.setText("Device name: " + lircFileN + "/n" + "Buttons: " + "/n" + rb.toString());
+                String display = "Device name: " + lircFileN + "\n" + "Buttons: " + "\n";
+                for(RemoteButtonModel each : rb) {
+                    display = display + each.getDisplayName() + "\n";
+                }
+                remoteConfigText.setText(display);
             }
         });
     }
