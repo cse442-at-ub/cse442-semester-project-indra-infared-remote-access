@@ -77,8 +77,8 @@ public class MyDevicesFragment extends Fragment {
         tvButton.setText(tv.getDisplayName());
         lightsButton.setText(lights.getDisplayName());
 
-        sv.addView(tvButton);
-        sv.addView(lightsButton);
+//        sv.addView(tvButton);
+//        sv.addView(lightsButton);
 
         DatabaseUtil util = new DatabaseUtil(getActivity());
 
