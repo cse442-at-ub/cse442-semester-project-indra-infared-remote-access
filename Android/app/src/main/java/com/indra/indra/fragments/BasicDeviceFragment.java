@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.indra.indra.MainActivity;
 import com.indra.indra.R;
+import com.indra.indra.models.RemoteButtonModel;
 import com.indra.indra.models.RemoteModel;
 import com.indra.indra.objects.RemoteButtonHandlerDaemon;
 import com.indra.indra.ui.buttons.RemoteButton;
@@ -58,16 +61,37 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
             }
         });
 
+        ArrayList<RemoteButtonModel> buttonModels = baseDevice.getButtonModels();
 
-        ArrayList<View> buttons = inflatedFragment.getTouchables();
+        TableLayout table = inflatedFragment.findViewById(R.id.bigButtonHolder);
+        TableRow row = new TableRow(getActivity());
+        int count = 0;
+        for(final RemoteButtonModel button : buttonModels) {
+            RemoteButton b = new RemoteButton(getActivity(), button.getLircName());
+            b.setText(button.getDisplayName());
+            b.setWidth((int)((getActivity().getWindow().getAttributes().width)*0.9)/3);
+            b.setOnTouchListener(this);
 
-        for(View button : buttons){
+            row.addView(b);
+            count++;
+            if (count == 3) {
+                count = 0;
 
-            if(button instanceof RemoteImageButton || button instanceof RemoteButton){
-                button.setOnTouchListener(this);
+                table.addView(row);
+                row = new TableRow(getActivity());
             }
-
         }
+
+//        ArrayList<View> buttons = inflatedFragment.getTouchables();
+
+
+//        for(View button : buttons){
+//
+//            if(button instanceof RemoteImageButton || button instanceof RemoteButton){
+//                button.setOnTouchListener(this);
+//            }
+//
+//        }
 
 
         return inflatedFragment;
