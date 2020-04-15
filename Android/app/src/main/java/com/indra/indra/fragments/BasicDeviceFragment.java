@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,15 +62,21 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
             }
         });
 
-        ArrayList<RemoteButtonModel> buttonModels = baseDevice.getButtonModels();
 
+        TextView tv = inflatedFragment.findViewById(R.id.remote_fragment_remote_name);
+        tv.setText(baseDevice.getDisplayName());
+
+        ArrayList<RemoteButtonModel> buttonModels = baseDevice.getButtonModels();
         TableLayout table = inflatedFragment.findViewById(R.id.bigButtonHolder);
         TableRow row = new TableRow(getActivity());
         int count = 0;
         for(final RemoteButtonModel button : buttonModels) {
             RemoteButton b = new RemoteButton(getActivity(), button.getLircName());
             b.setText(button.getDisplayName());
-            b.setWidth((int)((getActivity().getWindow().getAttributes().width)*0.9)/3);
+
+            int buttonWidth = (int)Math.ceil((getActivity().getWindow().getAttributes().width * .99) / 3);
+
+//            b.setWidth(buttonWidth);
             b.setOnTouchListener(this);
 
             row.addView(b);
@@ -101,9 +108,18 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        int action = event.getAction();
+        int action = event.getActionMasked();
+        int daemonAction;
 
-        if(action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP){
+        if(action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP ||
+                action == MotionEvent.ACTION_CANCEL){
+
+            if(action == MotionEvent.ACTION_DOWN){
+                daemonAction = RemoteButtonHandlerDaemon.BUTTON_EVENT_DOWN;
+            } else {
+                daemonAction = RemoteButtonHandlerDaemon.BUTTON_EVENT_UP;
+            }
+
             Handler daemonHandler = remoteButtonDaemon.getButtonEventMessageHandler();
             String lircName = baseDevice.getLircName();
             String buttonName = v instanceof RemoteButton ? ((RemoteButton)v).getLircName() : ((RemoteImageButton) v).getLircName();
@@ -111,7 +127,7 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
             Bundle buttonPressBundle = new Bundle();
             buttonPressBundle.putString(RemoteButtonHandlerDaemon.REMOTE_NAME_KEY, lircName);
             buttonPressBundle.putString(RemoteButtonHandlerDaemon.BUTTON_NAME_KEY, buttonName);
-            buttonPressBundle.putInt(RemoteButtonHandlerDaemon.BUTTON_EVENT_KEY, action);
+            buttonPressBundle.putInt(RemoteButtonHandlerDaemon.BUTTON_EVENT_KEY, daemonAction);
             Message msg = daemonHandler.obtainMessage();
             msg.setData(buttonPressBundle);
             daemonHandler.sendMessage(msg);

@@ -119,7 +119,8 @@ public class AddDeviceFragment extends Fragment {
                     Iterator<String> keysItr = buttonsList.keys();
                     while(keysItr.hasNext()) {
                          String key = keysItr.next();
-                         rbuttons.add(new RemoteButtonModel(key,key,000,000));
+                         String dName = getDisplayNameFromLIRCName(key);
+                         rbuttons.add(new RemoteButtonModel(dName,key,000,000));
                     }
 
                     Log.d("FileSearch", "Finished processing response");
@@ -152,6 +153,36 @@ public class AddDeviceFragment extends Fragment {
 
         ((MainActivity) getActivity()).setMenuItemChecked(R.id.nav_add_device);
         return inflatedFragment;
+    }
+
+    private String getDisplayNameFromLIRCName(String key) {
+        String dName;
+
+        if (key.contains("KEY_")){
+            dName = key.replaceFirst("KEY_", "");
+        } else if(key.contains("BTN_")){
+            dName = key.replaceFirst("BTN_", "");
+        } else {
+            return key;
+        }
+
+
+        dName = dName.replace("_", " ");
+
+        switch (dName){
+            case "CHANNELDOWN":
+                dName = "CH. DOWN";
+                break;
+            case "CHANNELUP":
+                dName = "CH. UP";
+                break;
+            case "VOLUMEUP":
+                dName = "VOL. UP";
+                break;
+            case "VOLUMEDOWN":
+                dName = "VOL. DOWN";
+        }
+        return dName;
     }
 
     public void updateRemoteConfig(final String lircFileN, final ArrayList<RemoteButtonModel> rb)
