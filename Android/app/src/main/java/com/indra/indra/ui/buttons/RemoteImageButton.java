@@ -20,6 +20,11 @@ public class RemoteImageButton extends AppCompatImageButton {
         lircName = "";
     }
 
+    public RemoteImageButton(Context context, String lircName){
+        super(context);
+        this.lircName = lircName;
+    }
+
     public RemoteImageButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         getLircNameFromLayout(context, attrs);
