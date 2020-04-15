@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.indra.indra.objects.BaseDeviceClass;
+import com.indra.indra.db.DatabaseUtil;
+import com.indra.indra.models.RemoteButtonModel;
+import com.indra.indra.models.RemoteModel;
 import com.indra.indra.R;
+import com.indra.indra.ui.buttons.MyDeviceMenuButton;
+
+import java.util.ArrayList;
 
 
 public class MyDevicesFragment extends Fragment {
@@ -39,8 +45,8 @@ public class MyDevicesFragment extends Fragment {
 
         LinearLayout sv = inflatedFragment.findViewById(R.id.devices_view);
         //DUMMY DATA
-        final BaseDeviceClass tv = new BaseDeviceClass(getString(R.string.living_room_tv), "SamsungBN59-01054A");
-        final BaseDeviceClass lights = new BaseDeviceClass(getString(R.string.string_lights), "DUMMY DATA");
+        final RemoteModel tv = new RemoteModel(getString(R.string.living_room_tv), "SamsungBN59-01054A");
+        final RemoteModel lights = new RemoteModel(getString(R.string.string_lights), "DUMMY DATA");
         Button tvButton = new Button(getActivity());
         final Button lightsButton = new Button(getActivity());
 
@@ -71,8 +77,37 @@ public class MyDevicesFragment extends Fragment {
         tvButton.setText(tv.getDisplayName());
         lightsButton.setText(lights.getDisplayName());
 
-        sv.addView(tvButton);
-        sv.addView(lightsButton);
+//        sv.addView(tvButton);
+//        sv.addView(lightsButton);
+
+        DatabaseUtil util = new DatabaseUtil(getActivity());
+
+        ArrayList<RemoteModel> remoteModels = util.getDevicesForUser(DatabaseUtil.DEFAULT_USER);
+
+        for(final RemoteModel deviceClass : remoteModels){
+            MyDeviceMenuButton b = new MyDeviceMenuButton(deviceClass, getActivity());
+
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+                    Log.i("REMOTE_NAME", deviceClass.getLircName());
+
+                    for(RemoteButtonModel model : deviceClass.getButtonModels()){
+                        Log.i("BUTTON NAME", model.getLircName());
+                    }
+
+                    Fragment nextActiveFragment = new BasicDeviceFragment(deviceClass, R.layout.fragment_basic_device);
+                    transaction.replace(R.id.fragment_container, nextActiveFragment).commit();
+                }
+            });
+
+//            b.setText(deviceClass.getDisplayName());
+
+            sv.addView(b);
+        }
 
         return inflatedFragment;
     }

@@ -128,13 +128,45 @@ io.on("connection", (socket) => {
 
   // extract remote and button info received from android app
   var remote, button;
-  socket.on("button_press", (data) =>{
+  socket.on("button_press", (data) => {
     data = JSON.parse(data);
     remote = data["remote"];
     button = data["button"];
+    method = data["method"];
 
     // emit button_press event to all connected clients
-    io.emit("button_press", {"remote": remote, "button": button});
+    io.emit("button_press", {"remote": remote, "button": button, "method": method});
+  });
+
+  //---Handle LIRC config file request
+  var brand, model, id;
+
+  //-listen on file_request event from app and extract brand and model
+  socket.on("file_request", (data)=> {
+    data = JSON.parse(data);
+    brand = data["brand"];
+    model = data["model"];
+    id = socket.id;
+
+    // emit file_request event to the pi
+    io.emit("file_request",
+    {
+      "brand": brand,
+      "model": model,
+      "id": id
+    });
+  });
+
+  //-handle config file response from pi and emit to app
+  socket.on("file_response", (data) => {
+    data = JSON.parse(data);
+
+    io.emit("file_response",
+    {
+      "success": data["success"],
+      "file_contents": data["file_contents"],
+      "id": data["id"]
+    });
   });
 });
 

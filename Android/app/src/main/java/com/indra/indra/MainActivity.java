@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,15 +15,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
+import com.indra.indra.db.DatabaseUtil;
 import com.indra.indra.fragments.AddDeviceFragment;
 import com.indra.indra.fragments.BasicDeviceFragment;
 import com.indra.indra.fragments.MyDevicesFragment;
-import com.indra.indra.fragments.RemoteFragment;
 import com.indra.indra.fragments.ToolbarFragment;
 
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-import com.indra.indra.objects.BaseDeviceClass;
+import com.indra.indra.models.RemoteModel;
 
 import java.net.URISyntaxException;
 
@@ -37,14 +36,21 @@ public class MainActivity extends AppCompatActivity
     private Socket clientSocket;
     private String ip,port;
 
+    private String currentUser = DatabaseUtil.DEFAULT_USER;
+
+    DatabaseUtil db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        db = new DatabaseUtil(this);
+
 //        ip = "12.0.0.1";
 //        ip = "192.168.1.4";
 //        ip = "cheshire.cse.buffalo.edu";
+
         ip = "fathomless-brook-21291.herokuapp.com";
 //        port = "6969";
 //        port = "8000";
@@ -83,6 +89,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
     private boolean connectToServer() {
         try {
 //            clientSocket = IO.socket("https://" + ip + ":" + port);
@@ -99,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public boolean socketSendToServer(String message) {
+    public boolean socketSendToServer(String event, String message) {
         if(!clientSocket.connected()) {
             clientSocket.close();
             if(!connectToServer()) { //attempt reconnect, it failed
@@ -108,7 +115,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         //reaching this point means socket is connected and ready to transmit
-        clientSocket.send(message);
+        clientSocket.emit(event, message);
         Log.d("Connection Alerts", "Successfully sent message to server");
         return true;
     }
@@ -144,7 +151,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (menuItem.getItemId()){
             case R.id.nav_remote:
-                transaction.replace(R.id.fragment_container, new BasicDeviceFragment(new BaseDeviceClass(getString(R.string.living_room_tv), "SamsungBN59-01054A"), R.layout.fragment_default_tv_remote)).commit();
+                transaction.replace(R.id.fragment_container, new BasicDeviceFragment(new RemoteModel(getString(R.string.living_room_tv), "SamsungBN59-01054A"), R.layout.fragment_default_tv_remote)).commit();
                 break;
             case R.id.nav_my_devices:
                 transaction.replace(R.id.fragment_container, new MyDevicesFragment()).commit();
@@ -186,6 +193,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void lockNavigationDrawer() {
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    public void unlockNavigationDrawer(){
+        drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
 
 @Override
     public void onFragmentInteraction(Uri uri){
@@ -196,5 +210,7 @@ public class MainActivity extends AppCompatActivity
     public Socket getClientSocket(){
         return clientSocket;
     }
+
+    public DatabaseUtil getDb() {return db; }
 
 }
