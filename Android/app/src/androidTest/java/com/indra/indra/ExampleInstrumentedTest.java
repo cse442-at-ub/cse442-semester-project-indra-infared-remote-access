@@ -87,6 +87,18 @@ public class ExampleInstrumentedTest {
         util.resetTables();
     }
 
+    @Test
+    public void testDeletingRemoteWithButtons(){
+        RemoteModel model = new RemoteModel("TEST", "TEST", DatabaseUtil.DEFAULT_USER, -1);
+        model.addButtonModel(new RemoteButtonModel("LIRC", "LIRC", -1, -1));
+
+        util.resetTables();
+        util.insertDeviceToDatabase(model);
+
+        Assert.assertTrue(util.deleteRemote(model));
+        util.resetTables();
+    }
+
 //    @After
 //    public void destroyDB(){
 //        util.dropAllTables();

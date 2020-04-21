@@ -180,4 +180,17 @@ public class DatabaseUtil extends SQLiteOpenHelper {
         dropAllTables();
         setUpTables(this.getWritableDatabase());
     }
+
+
+    public boolean deleteRemote(RemoteModel model){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String remotesWhereClause = REMOTE_COLUMN_ID + "=?";
+        String buttonsWhereClause = BUTTON_COLUMN_REMOTE_ID + "=?";
+        String[] whereArgs = new String[]{Long.toString(model.getDeviceId())};
+
+        int total = db.delete(REMOTE_TABLE_NAME, remotesWhereClause, whereArgs);
+        total += db.delete(BUTTON_TABLE_NAME, buttonsWhereClause, whereArgs);
+
+        return total == model.getButtonModels().size() + 1;
+    }
 }

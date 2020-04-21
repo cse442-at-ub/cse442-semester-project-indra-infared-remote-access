@@ -29,7 +29,6 @@ import com.indra.indra.objects.RemoteButtonHandlerDaemon;
 import com.indra.indra.ui.buttons.RemoteButton;
 import com.indra.indra.ui.buttons.RemoteImageButton;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class BasicDeviceFragment extends Fragment implements View.OnTouchListener {
@@ -62,7 +61,7 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
 
-                transaction.replace(R.id.fragment_container, new SettingsFragment(_deviceName)).commit();
+                transaction.replace(R.id.fragment_container, new SettingsFragment(baseDevice)).commit();
             }
         });
 
