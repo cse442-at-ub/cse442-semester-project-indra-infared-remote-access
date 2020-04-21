@@ -1,5 +1,6 @@
 package com.indra.indra;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -161,6 +162,11 @@ public class MainActivity extends AppCompatActivity
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
+            case R.id.logout:
+                // this will clear the back stack and displays no animation on the screen
+                fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
         }
 
         drawer.closeDrawer(GravityCompat.START);
