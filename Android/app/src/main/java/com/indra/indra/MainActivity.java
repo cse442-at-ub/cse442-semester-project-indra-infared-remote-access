@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 import com.indra.indra.db.DatabaseUtil;
+import com.indra.indra.fragments.AccountSettingsFragment;
 import com.indra.indra.fragments.AddDeviceFragment;
 import com.indra.indra.fragments.BasicDeviceFragment;
 import com.indra.indra.fragments.MyDevicesFragment;
@@ -156,6 +157,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_my_devices:
                 transaction.replace(R.id.fragment_container, new MyDevicesFragment()).commit();
+                break;
+            case R.id.nav_account_settings:
+                transaction.replace(R.id.fragment_container, new AccountSettingsFragment()).commit();
                 break;
             case R.id.nav_add_device:
                 ToolbarFragment fragment = new ToolbarFragment();
