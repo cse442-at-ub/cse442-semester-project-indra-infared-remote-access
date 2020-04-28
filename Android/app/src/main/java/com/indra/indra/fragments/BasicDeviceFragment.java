@@ -4,12 +4,14 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -94,16 +96,14 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
 
         addButtonsToRemote(table);
 
-//        ArrayList<View> buttons = inflatedFragment.getTouchables();
+        ArrayList<View> buttons = inflatedFragment.getTouchables();
 
+        for(View button : buttons){
+            if(button instanceof RemoteImageButton || button instanceof RemoteButton){
+                button.setOnTouchListener(this);
+            }
 
-//        for(View button : buttons){
-//
-//            if(button instanceof RemoteImageButton || button instanceof RemoteButton){
-//                button.setOnTouchListener(this);
-//            }
-//
-//        }
+        }
 
 
         return inflatedFragment;
@@ -397,6 +397,15 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
 
         int action = event.getActionMasked();
         int daemonAction;
+
+        if (action == MotionEvent.ACTION_MOVE) {
+            TableRow.LayoutParams params = new TableRow.LayoutParams(v.getWidth(), v.getHeight());
+//            params.setMargins((int) event.getRawX() - v.getWidth() / 2, (int) (event.getRawY()) - v.getHeight(), (int) event.getRawX() - v.getWidth(), (int) (event.getRawY()) - v.getHeight());
+//            params.setMargins(v.getWidth(), v.getHeight(),(int)(event.getRawX() - (v.getWidth() / 2)), (int)(event.getRawY() - (v.getHeight())));
+            params.setMargins((int)event.getRawX() - v.getWidth()/2, (int)(event.getRawY() - v.getHeight()*1.5), (int)event.getRawX() - v.getWidth()/2, (int)(event.getRawY() - v.getHeight()*1.5));
+            v.setLayoutParams(params);
+            return true;
+        }
 
         if(action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP ||
                 action == MotionEvent.ACTION_CANCEL){
