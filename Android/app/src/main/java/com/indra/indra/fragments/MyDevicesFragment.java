@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.indra.indra.MainActivity;
 import com.indra.indra.db.DatabaseUtil;
 import com.indra.indra.models.RemoteButtonModel;
 import com.indra.indra.models.RemoteModel;
@@ -84,23 +85,17 @@ public class MyDevicesFragment extends Fragment {
 
         ArrayList<RemoteModel> remoteModels = util.getDevicesForUser(DatabaseUtil.DEFAULT_USER);
 
+        if(remoteModels.isEmpty()){
+            ((MainActivity) getActivity()).setCurrentRemote(null);
+        }
+
         for(final RemoteModel deviceClass : remoteModels){
             MyDeviceMenuButton b = new MyDeviceMenuButton(deviceClass, getActivity());
 
             b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-                    Log.i("REMOTE_NAME", deviceClass.getLircName());
-
-                    for(RemoteButtonModel model : deviceClass.getButtonModels()){
-                        Log.i("BUTTON NAME", model.getLircName());
-                    }
-
-                    Fragment nextActiveFragment = new BasicDeviceFragment(deviceClass, R.layout.fragment_basic_device);
-                    transaction.replace(R.id.fragment_container, nextActiveFragment).commit();
+                    ((MainActivity) getActivity()).openDeviceFragment(deviceClass);
                 }
             });
 

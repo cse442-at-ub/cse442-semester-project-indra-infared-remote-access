@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -27,6 +29,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import com.indra.indra.models.RemoteModel;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -40,6 +43,8 @@ public class MainActivity extends AppCompatActivity
     private String currentUser = DatabaseUtil.DEFAULT_USER;
 
     DatabaseUtil db;
+
+    private RemoteModel currentRemote;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +81,8 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
+        ArrayList<RemoteModel> remotes = db.getDevicesForUser(currentUser);
+        currentRemote = remotes.size() == 0 ? null : remotes.get(0);
 
         //// Needs code to show the my devices fragment on startup ////
 
@@ -152,7 +159,12 @@ public class MainActivity extends AppCompatActivity
 
         switch (menuItem.getItemId()){
             case R.id.nav_remote:
-                transaction.replace(R.id.fragment_container, new BasicDeviceFragment(new RemoteModel(getString(R.string.living_room_tv), "SamsungBN59-01054A"), R.layout.fragment_default_tv_remote)).commit();
+                if(currentRemote == null){
+                    Toast.makeText(this, "There is no remote to open. Add a new one with Add New Device menu.", Toast.LENGTH_SHORT).show();
+                    return false;
+                } else {
+                    transaction.replace(R.id.fragment_container, new BasicDeviceFragment(currentRemote, R.layout.fragment_basic_device)).commit();
+                }
                 break;
             case R.id.nav_my_devices:
                 transaction.replace(R.id.fragment_container, new MyDevicesFragment()).commit();
@@ -162,11 +174,13 @@ public class MainActivity extends AppCompatActivity
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
+                break;
             case R.id.logout:
                 // this will clear the back stack and displays no animation on the screen
                 fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -213,10 +227,22 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    public void openDeviceFragment(RemoteModel model){
+        setCurrentRemote(model);
+        setMenuItemChecked(R.id.nav_remote);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        Fragment nextActiveFragment = new BasicDeviceFragment(model, R.layout.fragment_basic_device);
+        transaction.replace(R.id.fragment_container, nextActiveFragment).commit();
+    }
+
+
     public Socket getClientSocket(){
         return clientSocket;
     }
 
     public DatabaseUtil getDb() {return db; }
+
+    public void setCurrentRemote(RemoteModel currentRemote){ this.currentRemote = currentRemote; }
 
 }
