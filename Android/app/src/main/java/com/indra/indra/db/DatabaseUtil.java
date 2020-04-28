@@ -193,4 +193,44 @@ public class DatabaseUtil extends SQLiteOpenHelper {
 
         return total == model.getButtonModels().size() + 1;
     }
+
+
+    public RemoteModel getDeviceById(long id){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String whereClause = REMOTE_COLUMN_ID + "=?";
+        String[] whereArgs = new String[]{ Long.toString(id) };
+
+        Cursor cursor = db.query(REMOTE_TABLE_NAME, null, whereClause, whereArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            String lircName = cursor.getString(cursor.getColumnIndex(REMOTE_COLUMN_LIRC_NAME));
+            String displayName = cursor.getString(cursor.getColumnIndex(REMOTE_COLUMN_DISPLAY_NAME));
+            String username = cursor.getString(cursor.getColumnIndex(REMOTE_COLUMN_USER));
+
+            RemoteModel model = new RemoteModel(displayName, lircName, username, id);
+            model.setButtonModels(getButtonsForRemoteWithId(id));
+
+            return model;
+        }
+
+        return null;
+    }
+
+    public RemoteModel updateRemoteDisplayName(long id, String displayName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(REMOTE_COLUMN_DISPLAY_NAME, displayName);
+
+        String whereClause = REMOTE_COLUMN_ID + "=?";
+        String[] whereArgs = new String[]{ Long.toString(id) };
+
+
+        int affected = db.update(REMOTE_TABLE_NAME, values, whereClause, whereArgs);
+
+        if(affected != 1){
+            return null;
+        }
+
+        return getDeviceById(id);
+    }
 }
