@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
+    <EditText
         android:id="@+id/account_name"
         android:layout_width="149dp"
         android:layout_height="53dp"
@@ -37,7 +37,7 @@
         android:layout_width="113dp"
         android:layout_height="37dp"
         android:layout_marginTop="1dp"
-        android:text="edit"
+        android:text="save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.642"
         app:layout_constraintStart_toEndOf="@+id/account_name"

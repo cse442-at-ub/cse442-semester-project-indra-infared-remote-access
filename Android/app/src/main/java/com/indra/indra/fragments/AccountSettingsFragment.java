@@ -79,8 +79,16 @@ public class AccountSettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View inflatedFragment = inflater.inflate(R.layout.fragment_account_settings, container, false);
 
-        TextView mAccountName = inflatedFragment.findViewById(R.id.account_name);
+        EditText mAccountName = inflatedFragment.findViewById(R.id.account_name);
         mAccountName.setText(DatabaseUtil.DEFAULT_USER);
+
+        Button save = inflatedFragment.findViewById(R.id.edit_button_name);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         TableLayout devicesTable = inflatedFragment.findViewById(R.id.account_settings_devices);
         DatabaseUtil util = new DatabaseUtil(getActivity());
@@ -99,6 +107,17 @@ public class AccountSettingsFragment extends Fragment {
 
             Button b = new Button(getActivity());
             b.setText("edit");
+            b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Used to switch between fragments in the current activity
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+
+                    transaction.replace(R.id.fragment_container, new SettingsFragment(deviceClass)).commit();
+                }
+            });
             //b.setWidth((getActivity().getWindow().getAttributes().width)/5);
 
             row.addView(b);
