@@ -4,6 +4,7 @@
     <string name="navigation_drawer_open">Open Navigation Drawer</string>
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
 
+    <string name="ip_missing_warning">"IP Address is missing! You won't be able to use most of this app without providing a correct IP address for your Raspberry Pi."</string>
     <string name="mock_remote">
         #\n
         # this config file was automatically generated\n

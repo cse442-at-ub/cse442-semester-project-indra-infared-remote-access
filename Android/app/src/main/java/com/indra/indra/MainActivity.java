@@ -1,14 +1,25 @@
 package com.indra.indra;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.Spanned;
 import android.util.Log;
+import android.util.Patterns;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -26,10 +37,12 @@ import com.indra.indra.fragments.ToolbarFragment;
 
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.indra.indra.models.IpAddressModel;
 import com.indra.indra.models.RemoteModel;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -41,6 +54,7 @@ public class MainActivity extends AppCompatActivity
     private String ip,port;
 
     private String currentUser = DatabaseUtil.DEFAULT_USER;
+    private String raspberryPiIP;
 
     DatabaseUtil db;
 
@@ -52,6 +66,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         db = new DatabaseUtil(this);
+
+        IpAddressModel model = db.getIpForUser(currentUser);
+        raspberryPiIP = model == null ? null : model.getIpAddress();
+        Log.i("PI IP ADDRESS", raspberryPiIP == null ? "null" : raspberryPiIP);
 
 //        ip = "12.0.0.1";
 //        ip = "192.168.1.4";
@@ -162,7 +180,15 @@ public class MainActivity extends AppCompatActivity
                 if(currentRemote == null){
                     Toast.makeText(this, "There is no remote to open. Add a new one with Add New Device menu.", Toast.LENGTH_SHORT).show();
                     return false;
-                } else {
+                } else if(raspberryPiIP == null) {
+                    TextView msg = null;
+                    try {
+                        msg = findViewById(R.id.ip_address_display);
+                    } catch (Exception e){}
+
+                    editIpAddressDialog(getString(R.string.ip_missing_warning), msg);
+                    return false;
+                }else {
                     transaction.replace(R.id.fragment_container, new BasicDeviceFragment(currentRemote, R.layout.fragment_basic_device)).commit();
                 }
                 break;
@@ -170,6 +196,17 @@ public class MainActivity extends AppCompatActivity
                 transaction.replace(R.id.fragment_container, new MyDevicesFragment()).commit();
                 break;
             case R.id.nav_add_device:
+
+                if(raspberryPiIP == null) {
+                    TextView msg = null;
+                    try {
+                        msg = findViewById(R.id.ip_address_display);
+                    } catch (Exception e){}
+
+                    editIpAddressDialog(getString(R.string.ip_missing_warning), msg);
+                    return false;
+                }
+
                 ToolbarFragment fragment = new ToolbarFragment();
                 transaction.replace(R.id.fragment_container, fragment);
                 transaction.addToBackStack(null);
@@ -245,4 +282,64 @@ public class MainActivity extends AppCompatActivity
 
     public void setCurrentRemote(RemoteModel currentRemote){ this.currentRemote = currentRemote; }
 
+    public String getRaspberryPiIP() {
+        return raspberryPiIP;
+    }
+
+
+    public void editIpAddressDialog(String message, TextView msgBox){
+        AlertDialog.Builder editIpDialogBuilder = new AlertDialog.Builder(this);
+        editIpDialogBuilder.setTitle("Edit Raspberry Pi IP Address");
+        editIpDialogBuilder.setMessage(message);
+
+        final EditText ipInput = new EditText(this);
+        ipInput.setInputType(InputType.TYPE_CLASS_PHONE);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        ipInput.setLayoutParams(lp);
+
+        InputFilter filter = (source, start, end, dest, dstart, dend) -> {
+            for (int i = start; i < end; ++i)
+            {
+                if (!Pattern.compile("[1234567890.]*").matcher(String.valueOf(source.charAt(i))).matches())
+                {
+                    return "";
+                }
+            }
+
+            return null;
+        };
+
+        ipInput.setFilters(new InputFilter[]{filter, new InputFilter.LengthFilter(15)});
+//        ipInput.setFilters(new InputFilter[]{new InputFilter.LengthFilter(15)});
+
+        editIpDialogBuilder.setView(ipInput);
+        editIpDialogBuilder.setPositiveButton("Update", (dialog, which) -> {
+
+        });
+        editIpDialogBuilder.setNegativeButton("Cancel", ((dialog, which) -> {}));
+
+        AlertDialog editIpDialog = editIpDialogBuilder.show();
+        editIpDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String input = ipInput.getText().toString();
+
+            if(Patterns.IP_ADDRESS.matcher(input).matches()){
+                raspberryPiIP = input;
+                if(msgBox != null){
+                    msgBox.setText("IP Address: " + raspberryPiIP);
+                }
+                db.updateIpRow(input, currentUser);
+                editIpDialog.dismiss();
+            } else {
+                Toast t = Toast.makeText(this, "Input was not a valid IP Address.", Toast.LENGTH_SHORT);
+                t.setGravity(Gravity.TOP, 0, 20);
+                t.show();
+            }
+
+        });
+
+
+
+    }
 }
