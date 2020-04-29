@@ -124,7 +124,7 @@ public class RemoteButtonHandlerDaemon extends Thread {
         jsonMap.put("remote", remoteName);
         jsonMap.put("button", buttonName);
         jsonMap.put("method", method);
-
+        jsonMap.put("ipAddress", mainActivity.getRaspberryPiIP());
         JSONObject message = new JSONObject(jsonMap);
         clientSocket.emit("button_press", message.toString());
         Log.d("SOCKETIO", message.toString());

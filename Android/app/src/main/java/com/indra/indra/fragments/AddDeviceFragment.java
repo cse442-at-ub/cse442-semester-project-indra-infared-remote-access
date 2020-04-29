@@ -99,6 +99,7 @@ public class AddDeviceFragment extends Fragment {
         jsonMap.put("brand", inputs[0]);
         jsonMap.put("model", inputs[1]);
         jsonMap.put("id", clientSocket.id());
+        jsonMap.put("ipAddress", ((MainActivity) getActivity()).getRaspberryPiIP());
 
         JSONObject message = new JSONObject(jsonMap);
         clientSocket.emit("file_request", message.toString());

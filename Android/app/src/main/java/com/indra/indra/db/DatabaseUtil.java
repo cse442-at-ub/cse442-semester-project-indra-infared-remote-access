@@ -259,7 +259,7 @@ public class DatabaseUtil extends SQLiteOpenHelper {
             String[] whereArgs = new String[]{ Long.toString(ipModel.getId()) };
 
 
-            int affected = db.update(REMOTE_TABLE_NAME, values, whereClause, whereArgs);
+            int affected = db.update(IP_TABLE_NAME, values, whereClause, whereArgs);
             ipModel.setIpAddress(ip);
         } else {
             ContentValues values = new ContentValues();
