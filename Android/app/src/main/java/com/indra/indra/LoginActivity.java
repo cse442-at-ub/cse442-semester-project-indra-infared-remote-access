@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         Login = (Button) findViewById(R.id.loginButton);
         ErrorText = (TextView) findViewById(R.id.errorMessage);
 
-       authenticateDB();
+//       authenticateDB();
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
