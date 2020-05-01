@@ -15,16 +15,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.mongodb.stitch.android.core.Stitch;
 import com.mongodb.stitch.android.core.StitchAppClient;
-import com.mongodb.stitch.android.core.auth.providers.userapikey.UserApiKeyAuthProviderClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
-import com.mongodb.stitch.android.core.auth.providers.userapikey.internal.*;
 import com.mongodb.stitch.core.auth.providers.userapikey.UserApiKeyCredential;
-import com.mongodb.stitch.core.auth.providers.userapikey.models.UserApiKey;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteInsertOneResult;
-import com.mongodb.stitch.core.services.mongodb.remote.sync.ChangeEventListener;
-import com.mongodb.stitch.core.services.mongodb.remote.sync.DefaultSyncConflictResolvers;
-import com.mongodb.stitch.core.services.mongodb.remote.sync.ErrorListener;
 
 
 import org.bson.Document;
@@ -47,16 +41,23 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        username = (EditText) findViewById(R.id.editText3);
-        password = (EditText) findViewById(R.id.editText4);
-        repassword = (EditText) findViewById(R.id.editText5);
+        username = (EditText) findViewById(R.id.usernameText);
+        password = (EditText) findViewById(R.id.passwordText);
+        repassword = (EditText) findViewById(R.id.confimPasswordText);
         errorText = (TextView) findViewById(R.id.errorMessage2);
         Signup1 = (Button) findViewById(R.id.button2);
         authorizeDB2();
             Signup1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    sign_up(username.getText().toString(), password.getText().toString());
+
+                    if(!(password.getText().toString().equals(repassword.getText().toString()))) {
+                        Log.d("signup", password.getText() + ":" + repassword.getText());
+                        errorText.setText("Password and Confirm Password do not match. Try again.");
+                    }
+                    else {
+                        sign_up(username.getText().toString(), password.getText().toString());
+                    }
                 }
             });
     }
