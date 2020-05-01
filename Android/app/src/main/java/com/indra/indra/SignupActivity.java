@@ -62,7 +62,13 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void authorizeDB2(){
-        final StitchAppClient client = Stitch.initializeDefaultAppClient(mongoAppId);
+        StitchAppClient client;
+        try {
+            client = Stitch.getDefaultAppClient();
+        }
+        catch(Exception e) {
+            client = Stitch.initializeDefaultAppClient(mongoAppId);
+        }
         client.getAuth().loginWithCredential(new UserApiKeyCredential(mongoAPIKey));
         if(client.getAuth().isLoggedIn()) {
             Log.d("login", "logged into db");
@@ -76,7 +82,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private void sign_up(String user, String pass) {
         Document newDoc = new Document();
-        newDoc.append("Username", user).append("Password", pass);
+        newDoc.append("username", user).append("password", pass);
         final Task <RemoteInsertOneResult> insertTask = itemsCollection.insertOne(newDoc);
         insertTask.addOnCompleteListener(new OnCompleteListener<RemoteInsertOneResult>() {
             @Override
