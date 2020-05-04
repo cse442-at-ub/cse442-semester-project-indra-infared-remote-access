@@ -5,8 +5,8 @@ import util.pi_lirc as pi
 # IP = 'cheshire.cse.buffalo.edu'
 # PORT = '2680'
 
-# IP = 'fathomless-brook-21291.herokuapp.com/'
-IP = 'indra-272100.appspot.com'
+IP = 'fathomless-brook-21291.herokuapp.com/'
+# IP = 'indra-272100.appspot.com'
 
 # IP = "localhost"
 # PORT = "5000"
@@ -15,10 +15,11 @@ sio = socketio.Client()
 
 @sio.event
 def connect():
+    sio.emit('message')
     print("Connection established!")
 
 
-@sio.on('button_press')
+@sio.on('button_press',namespace='/pi')
 def my_message(data):
     if type(data) == str:
         data = json.loads(data)
@@ -28,7 +29,7 @@ def my_message(data):
     res = pi.send_ir_signal(data['remote'], data['button'], method=data['method'])
     
     
-@sio.on('search_request')
+@sio.on('search_request',namespace='/pi')
 def handle_search_request(data):
     if type(data) == str:
         data = json.loads(data)
@@ -42,7 +43,7 @@ def handle_search_request(data):
     sio.emit('search_results', response)
 
 
-@sio.on('file_request')
+@sio.on('file_request',namespace='/pi')
 def handle_file_request(data):
     output = {'success': False}
     if type(data) == str:
@@ -78,21 +79,24 @@ def handle_file_request(data):
             "buttons": buttons
         }
 
-        output['data'] = resp
+
+        output['file_contents'] = resp
         output['success'] = True
+
+        print(output)
 
         # if file_contents is not None:
         #     output['success'] = True
         #     output['file_contents'] = file_contents
 
-    sio.emit('file_response', output)
+    sio.emit('file_response', json.dumps(output))
 
 
 
 
 def main():
     # sio.connect("http://" + IP + ":" + PORT)
-    sio.connect('https://' + IP)
+    sio.connect('https://' + IP, namespaces=['/pi'])
     sio.wait()
 
 
