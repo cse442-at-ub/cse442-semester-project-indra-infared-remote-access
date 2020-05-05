@@ -63,7 +63,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void authenticateDB() {
         //mongoDB connection - from MongoDB official 'how to connect java(android)'
-        final StitchAppClient client = Stitch.initializeDefaultAppClient(mongoAppId);
+        StitchAppClient client;
+        try {
+            client = Stitch.getDefaultAppClient();
+        }
+        catch(Exception e) {
+            client = Stitch.initializeDefaultAppClient(mongoAppId);
+        }
+
         client.getAuth().loginWithCredential(new UserApiKeyCredential(mongoAPIKey));
         if(client.getAuth().isLoggedIn()) {
             Log.d("login", "logged into db");

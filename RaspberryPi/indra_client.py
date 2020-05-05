@@ -16,25 +16,28 @@ sio = socketio.Client()
 
 @sio.event
 def connect():
+    sio.emit('message')
     print("Connection established!")
 
 
-@sio.on('button_press')
+@sio.on('button_press',namespace='/pi')
 def my_message(data):
     global authorized_users
 
     if type(data) == str:
         data = json.loads(data)
 
+    print("Message received from server with ", data)
+    print(data['remote'])
     username = data['username']
 
     if username in authorized_users:
         print("Message received from server with ", data)
         print(data['remote'])
         res = pi.send_ir_signal(data['remote'], data['button'], method=data['method'])
-
-
-@sio.on('search_request')
+    
+    
+@sio.on('search_request',namespace='/pi')
 def handle_search_request(data):
     global authorized_users
 
@@ -54,7 +57,7 @@ def handle_search_request(data):
         sio.emit('search_results', response)
 
 
-@sio.on('file_request')
+@sio.on('file_request',namespace='/pi')
 def handle_file_request(data):
     global authorized_users
 
@@ -96,7 +99,6 @@ def handle_file_request(data):
                 "name": name,
                 "buttons": buttons
             }
-
             output['file_contents'] = resp
             output['success'] = True
 
@@ -105,9 +107,7 @@ def handle_file_request(data):
             #     output['file_contents'] = file_contents
 
         print('file_response:', output)
-
         sio.emit('file_response', json.dumps(output))
-
 
 
 authorized_users = []
@@ -129,7 +129,7 @@ def main():
     print('Authorized Users:', authorized_users)
 
     # sio.connect("http://" + IP + ":" + PORT)
-    sio.connect('https://' + IP)
+    sio.connect('https://' + IP, namespaces=['/pi'])
     sio.wait()
 
 
