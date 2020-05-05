@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         Login = (Button) findViewById(R.id.loginButton);
         ErrorText = (TextView) findViewById(R.id.errorMessage);
 
-//       authenticateDB();
+       authenticateDB();
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +98,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else if(task.isSuccessful()) {
                     Log.d("login", "username+password found");
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("username", nameUser);
                     startActivity(intent);
                 }
                 else {

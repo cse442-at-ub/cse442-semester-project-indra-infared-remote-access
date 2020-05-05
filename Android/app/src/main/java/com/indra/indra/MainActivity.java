@@ -54,18 +54,31 @@ public class MainActivity extends AppCompatActivity
     private Socket clientSocket;
     private String ip,port;
 
-    private String currentUser = DatabaseUtil.DEFAULT_USER;
+    private String currentUser;
     private String raspberryPiIP;
 
     DatabaseUtil db;
 
     private RemoteModel currentRemote;
+    private boolean EasterEggMode;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        Bundle b = getIntent().getExtras();
+        String username = b.getString("username");
+        if(!username.isEmpty()) {
+            currentUser = username;
+            Log.d("login", "Username: " + username);
+        }
+        else {
+             currentUser = DatabaseUtil.DEFAULT_USER;
+            Log.d("login", "Username: Default User");
+        }
 
+        setContentView(R.layout.activity_main);
+        EasterEggMode = false;
         db = new DatabaseUtil(this);
 
         IpAddressModel model = db.getIpForUser(currentUser);
@@ -346,4 +359,8 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+
+    public void activateEasterEgg() { EasterEggMode = true; }
+
+    public boolean easterEggOn() { return EasterEggMode; }
 }
