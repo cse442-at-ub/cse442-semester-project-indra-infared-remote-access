@@ -7,4 +7,5 @@
 #     - 'y'
 #     - 'z'
 
-authorized_users: 
+authorized_users:
+    - 'DEFAULT'
