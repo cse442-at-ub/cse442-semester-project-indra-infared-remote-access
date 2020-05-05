@@ -25,11 +25,8 @@ def my_message(data):
     global authorized_users
 
     if type(data) == str:
+        print(data)
         data = json.loads(data)
-
-    print("Message received from server with ", data)
-    print(data['remote'])
-    username = data['username']
 
     if username in authorized_users:
         print("Message received from server with ", data)
