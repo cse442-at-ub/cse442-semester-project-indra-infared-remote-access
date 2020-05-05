@@ -21,6 +21,11 @@
             android:title="Remote" />
 
         <item
+            android:id="@+id/nav_account_settings"
+            android:icon="@android:drawable/ic_menu_preferences"
+            android:title="Account" />
+
+        <item
             android:id="@+id/logout"
             android:icon="@drawable/ic_power_black"
             android:title="Logout" />

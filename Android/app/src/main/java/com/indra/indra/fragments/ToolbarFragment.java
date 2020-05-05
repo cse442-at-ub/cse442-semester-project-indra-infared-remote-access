@@ -151,58 +151,7 @@ public class ToolbarFragment extends Fragment {
     }
 
     private void setupContactList() {
-/*
-        //dummy list, currently default list displayed in search until search is executed
-        String[] remotes = {"directv/G051204",
-                "directv/H23",
-                "directv/HD20-100",
-                "directv/RC16",
-                "directv/RC24",
-                "directv/RC32",
-                "directv/RC64",
 
-                "lg/42H3000",
-                "lg/6710CDAL01G",
-                "lg/6710CDAP01B",
-                "lg/6711R1P072B",
-                "lg/AKB33871420",
-                "lg/AKB69680",
-                "lg/AKB72915207",
-                "lg/BD300",
-                "lg/CC470TW",
-                "lg/EC970W",
-                "lg/EV230",
-                "lg/MKJ32022805",
-                "lg/PBAFA0189A",
-                "lg/VF28",
-                "panasonic/EUR511224",
-                "panasonic/EUR511300",
-                "panasonic/LSSQ0225",
-                "panasonic/LSSQ0226",
-                "panasonic/N2QADC000006",
-                "panasonic/N2QAEC000012",
-                "panasonic/NV-F65_HQ",
-                "panasonic/NV-FJ610",
-                "panasonic/NV-HS830",
-                "panasonic/RAK-RX309W",
-                "panasonic/RC331401",
-                "panasonic/RC4346_01B ",
-                "panasonic/RCR_195_DC1",
-                "panasonic/RX-ED70",
-                "panasonic/SA-AK25",
-                "panasonic/SA-PM02",
-                "panasonic/TC-21E1R",
-                "panasonic/TNQ2637",
-                "panasonic/TNQ8E0437"};
-
-
-        final ArrayList<RemoteConfig> contacts = new ArrayList<>();
-        for (int i = 0; i < remotes.length; i++) {
-            contacts.add(new RemoteConfig(remotes[i]));
-        }
-
-
-*/
         submitSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,6 +164,8 @@ public class ToolbarFragment extends Fragment {
                 HashMap<String, String> jsonMap = new HashMap<>();
                 jsonMap.put("brand", brandText);
                 jsonMap.put("model", modelText);
+                jsonMap.put("ipAddress", ((MainActivity) getActivity()).getRaspberryPiIP());
+                jsonMap.put("username", ((MainActivity) getActivity()).getCurrentUser());
 
                 JSONObject message = new JSONObject(jsonMap);
                 clientSocket.emit("search_request", message.toString());

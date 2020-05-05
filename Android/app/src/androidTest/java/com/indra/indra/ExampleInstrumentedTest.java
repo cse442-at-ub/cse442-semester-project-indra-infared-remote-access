@@ -99,6 +99,25 @@ public class ExampleInstrumentedTest {
         util.resetTables();
     }
 
+
+    @Test
+    public void testUpdatingRemoteName(){
+        RemoteModel model = new RemoteModel("TEST", "TEST", DatabaseUtil.DEFAULT_USER, -1);
+        model.addButtonModel(new RemoteButtonModel("LIRC", "LIRC", -1, -1));
+
+        util.resetTables();
+        util.insertDeviceToDatabase(model);
+
+        RemoteModel inserted = util.getDevicesForUser(DatabaseUtil.DEFAULT_USER).get(0);
+
+        util.updateRemoteDisplayName(inserted.getDeviceId(), "UPDATED");
+
+        ArrayList<RemoteModel> dbContents = util.getDevicesForUser(DatabaseUtil.DEFAULT_USER);
+
+        Assert.assertEquals(1, dbContents.size());
+        Assert.assertEquals("UPDATED", dbContents.get(0).getDisplayName());
+    }
+
 //    @After
 //    public void destroyDB(){
 //        util.dropAllTables();

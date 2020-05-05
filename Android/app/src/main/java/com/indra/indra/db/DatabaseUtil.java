@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.indra.indra.models.IpAddressModel;
 import com.indra.indra.models.RemoteModel;
 import com.indra.indra.models.RemoteButtonModel;
 
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 public class DatabaseUtil extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "Indra_DB";
-    public static final int DB_VERSION = 1;
+    public static final int DB_VERSION = 3;
     public static final String DEFAULT_USER = "DEFAULT";
 
     public static final String REMOTE_TABLE_NAME = "remoteTable";
@@ -29,6 +30,11 @@ public class DatabaseUtil extends SQLiteOpenHelper {
     public static final String BUTTON_COLUMN_LIRC_NAME = "lircName";
     public static final String BUTTON_COLUMN_DISPLAY_NAME = "displayName";
     public static final String BUTTON_COLUMN_REMOTE_ID = "remoteId";
+
+    public static final String IP_TABLE_NAME = "ipTable";
+    public static final String IP_COLUMN_ID = "id";
+    public static final String IP_COLUMN_IP_ADDR = "ipAddress";
+    public static final String IP_COLUMN_USER = "user";
 
 
     public DatabaseUtil(Context context){
@@ -166,6 +172,11 @@ public class DatabaseUtil extends SQLiteOpenHelper {
                         "(id INTEGER PRIMARY KEY AUTOINCREMENT, lircName TEXT, displayName TEXT, remoteId INTEGER);"
         );
 
+        db.execSQL(
+                String.format("CREATE TABLE IF NOT EXISTS %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s TEXT, %s TEXT);",
+                        IP_TABLE_NAME, IP_COLUMN_ID, IP_COLUMN_IP_ADDR, IP_COLUMN_USER)
+        );
+
         
     }
 
@@ -173,6 +184,7 @@ public class DatabaseUtil extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DROP TABLE " + REMOTE_TABLE_NAME + ";");
         db.execSQL("DROP TABLE " + BUTTON_TABLE_NAME + ";");
+        db.execSQL("DROP TABLE " + IP_TABLE_NAME + ";");
     }
 
 
@@ -192,5 +204,91 @@ public class DatabaseUtil extends SQLiteOpenHelper {
         total += db.delete(BUTTON_TABLE_NAME, buttonsWhereClause, whereArgs);
 
         return total == model.getButtonModels().size() + 1;
+    }
+
+
+    public RemoteModel getDeviceById(long id){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String whereClause = REMOTE_COLUMN_ID + "=?";
+        String[] whereArgs = new String[]{ Long.toString(id) };
+
+        Cursor cursor = db.query(REMOTE_TABLE_NAME, null, whereClause, whereArgs, null, null, null);
+        if(cursor.moveToFirst()){
+            String lircName = cursor.getString(cursor.getColumnIndex(REMOTE_COLUMN_LIRC_NAME));
+            String displayName = cursor.getString(cursor.getColumnIndex(REMOTE_COLUMN_DISPLAY_NAME));
+            String username = cursor.getString(cursor.getColumnIndex(REMOTE_COLUMN_USER));
+
+            RemoteModel model = new RemoteModel(displayName, lircName, username, id);
+            model.setButtonModels(getButtonsForRemoteWithId(id));
+
+            return model;
+        }
+
+        return null;
+    }
+
+    public RemoteModel updateRemoteDisplayName(long id, String displayName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(REMOTE_COLUMN_DISPLAY_NAME, displayName);
+
+        String whereClause = REMOTE_COLUMN_ID + "=?";
+        String[] whereArgs = new String[]{ Long.toString(id) };
+
+
+        int affected = db.update(REMOTE_TABLE_NAME, values, whereClause, whereArgs);
+
+        if(affected != 1){
+            return null;
+        }
+
+        return getDeviceById(id);
+    }
+
+
+    public IpAddressModel updateIpRow(String ip, String user){
+        IpAddressModel ipModel = getIpForUser(user);
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        if(ipModel != null){
+            ContentValues values = new ContentValues();
+            values.put(IP_COLUMN_IP_ADDR, ip);
+
+            String whereClause = IP_COLUMN_ID + "=?";
+            String[] whereArgs = new String[]{ Long.toString(ipModel.getId()) };
+
+
+            int affected = db.update(IP_TABLE_NAME, values, whereClause, whereArgs);
+            ipModel.setIpAddress(ip);
+        } else {
+            ContentValues values = new ContentValues();
+            values.put(IP_COLUMN_USER, user);
+            values.put(IP_COLUMN_IP_ADDR, ip);
+            long buttonId = db.insert(IP_TABLE_NAME, null, values);
+            ipModel = new IpAddressModel(buttonId, ip, user);
+        }
+
+        return ipModel;
+    }
+
+
+    public IpAddressModel getIpForUser(String user){
+        IpAddressModel ip = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String whereClause = IP_COLUMN_USER + "=?";
+        String[] whereArgs = new String[]{ user };
+
+        Cursor cursor = db.query(IP_TABLE_NAME, null, whereClause, whereArgs, null, null, null);
+
+        if(cursor.moveToFirst()){
+            long id = cursor.getLong(cursor.getColumnIndex(IP_COLUMN_ID));
+            String ipAddr = cursor.getString(cursor.getColumnIndex(IP_COLUMN_IP_ADDR));
+
+            ip = new IpAddressModel(id, ipAddr, user);
+        }
+
+        return ip;
     }
 }

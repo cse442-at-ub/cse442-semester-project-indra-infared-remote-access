@@ -11,12 +11,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.indra.indra.MainActivity;
 import com.indra.indra.R;
 import com.indra.indra.db.DatabaseUtil;
@@ -38,12 +41,33 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflatedFragment = inflater.inflate(R.layout.fragment_settings, container, false);
-        TextView deviceText = inflatedFragment.findViewById(R.id.activeDevice);
+        final EditText deviceText = inflatedFragment.findViewById(R.id.activeDevice);
         deviceText.setText(remote.getDisplayName()); //find a way to get name of device
         db = new DatabaseUtil(getActivity());
 
         Button deleteButton = inflatedFragment.findViewById(R.id.deleteButton);
         deleteButton.setOnClickListener(this);
+
+        Button saveButton = inflatedFragment.findViewById(R.id.saveButton);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Editable text = deviceText.getText();
+                remote = db.updateRemoteDisplayName(remote.getDeviceId(), text.toString());
+
+                ((MainActivity) getActivity()).openDeviceFragment(remote);
+            }
+        });
+
+
+        FloatingActionButton closeButton = inflatedFragment.findViewById(R.id.settingsCloseButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).openDeviceFragment(remote);
+            }
+        });
 
         return inflatedFragment;
     }
