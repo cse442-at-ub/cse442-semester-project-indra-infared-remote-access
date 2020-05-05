@@ -165,6 +165,7 @@ public class ToolbarFragment extends Fragment {
                 jsonMap.put("brand", brandText);
                 jsonMap.put("model", modelText);
                 jsonMap.put("ipAddress", ((MainActivity) getActivity()).getRaspberryPiIP());
+                jsonMap.put("username", ((MainActivity) getActivity()).getCurrentUser());
 
                 JSONObject message = new JSONObject(jsonMap);
                 clientSocket.emit("search_request", message.toString());

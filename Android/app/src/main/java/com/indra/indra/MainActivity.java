@@ -346,4 +346,9 @@ public class MainActivity extends AppCompatActivity
 
 
     }
+
+
+    public String getCurrentUser() {
+        return currentUser;
+    }
 }
