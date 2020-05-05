@@ -1,0 +1,10 @@
+# Provide a list of authorized users. An empty list will allow no one to interact with this Pi
+# Can be of the following formats
+# authorized_users: ['x', 'y', 'z']
+# OR
+# authorized_users:
+#     - 'x'
+#     - 'y'
+#     - 'z'
+
+authorized_users: 
