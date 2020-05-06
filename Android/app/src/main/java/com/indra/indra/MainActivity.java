@@ -363,4 +363,9 @@ public class MainActivity extends AppCompatActivity
     public void activateEasterEgg() { EasterEggMode = true; }
 
     public boolean easterEggOn() { return EasterEggMode; }
+
+    public String getCurrentUser() {
+        return currentUser;
+    }
+
 }

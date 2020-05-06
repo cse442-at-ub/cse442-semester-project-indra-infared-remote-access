@@ -168,38 +168,35 @@ public class ToolbarFragment extends Fragment {
                 }
                 else
                 {
-                    //send search text to server
-                    Socket clientSocket = ((MainActivity) getActivity()).getClientSocket();
 
-                    HashMap<String, String> jsonMap = new HashMap<>();
-                    jsonMap.put("brand", brandText);
-                    jsonMap.put("model", modelText);
-                    jsonMap.put("ipAddress", ((MainActivity) getActivity()).getRaspberryPiIP());
+                //send search text to server
+                Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
 
-                    JSONObject message = new JSONObject(jsonMap);
-                    clientSocket.emit("search_request", message.toString());
-                    Log.d("Search", "Request emitted");
+                HashMap<String, String> jsonMap = new HashMap<>();
+                jsonMap.put("brand", brandText);
+                jsonMap.put("model", modelText);
+                jsonMap.put("ipAddress", ((MainActivity) getActivity()).getRaspberryPiIP());
+                jsonMap.put("username", ((MainActivity) getActivity()).getCurrentUser());
 
-                    //returning object from server
+                JSONObject message = new JSONObject(jsonMap);
+                clientSocket.emit("search_request", message.toString());
+                Log.d("Search", "Request emitted");
 
-                    clientSocket.on("search_results", new Emitter.Listener() {
-                        @Override
-                        public void call(Object... args) {
-                            Log.d("Search", "Recieved response from server");
-                            try {
+                //returning object from server
 
-                                JSONArray ja = (JSONArray) args[0];
-                                final ArrayList<RemoteConfig> contacts = new ArrayList<>();
-                                for (int i = 0; i < ja.length(); i++) {
-                                    JSONObject d = ja.getJSONObject(i);
-                                    String b = (String) d.get("brand");
-                                    String m = (String) d.get("device");
-                                    contacts.add(new RemoteConfig(b + " " + m));
-                                }
-                                adapter = new RemoteConfigListAdapter(getActivity(), R.layout.layout_remoteconfigs_listitem, contacts, "https://");
-                                updateRemoteList();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                clientSocket.on("search_results", new Emitter.Listener() {
+                    @Override
+                    public void call(Object... args) {
+                        Log.d("Search", "Recieved response from server");
+                        try {
+
+                            JSONArray ja = (JSONArray) args[0];
+                            final ArrayList<RemoteConfig> contacts = new ArrayList<>();
+                            for(int i = 0; i < ja.length(); i++) {
+                                JSONObject d = ja.getJSONObject(i);
+                                String b = (String) d.get("brand");
+                                String m = (String) d.get("device");
+                                contacts.add(new RemoteConfig(b + " " + m));
                             }
 
                         }

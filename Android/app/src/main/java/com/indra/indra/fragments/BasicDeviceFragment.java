@@ -10,8 +10,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -38,6 +40,7 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
     private RemoteModel baseDevice;
     private int layoutId;
     private RemoteButtonHandlerDaemon remoteButtonDaemon;
+    boolean drag = false;
 
     public BasicDeviceFragment(RemoteModel basicDevice, int layoutId) {
         _deviceName = basicDevice.getDisplayName();
@@ -97,6 +100,18 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
 //            }
 //        }
 
+        Switch btnMove = inflatedFragment.findViewById(R.id.moveBtnSwitch);
+        btnMove.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    drag = true;
+                }
+                else {
+                    drag = false;
+                }
+            }
+        });
+
         addButtonsToRemote(table);
 
         ArrayList<View> buttons = inflatedFragment.getTouchables();
@@ -105,7 +120,6 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
             if(button instanceof RemoteImageButton || button instanceof RemoteButton){
                 button.setOnTouchListener(this);
             }
-
         }
 
 
@@ -402,11 +416,13 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
         int daemonAction;
 
         if (action == MotionEvent.ACTION_MOVE) {
-            TableRow.LayoutParams params = new TableRow.LayoutParams(v.getWidth(), v.getHeight());
+            if (drag) {
+                TableRow.LayoutParams params = new TableRow.LayoutParams(v.getWidth(), v.getHeight());
 //            params.setMargins((int) event.getRawX() - v.getWidth() / 2, (int) (event.getRawY()) - v.getHeight(), (int) event.getRawX() - v.getWidth(), (int) (event.getRawY()) - v.getHeight());
 //            params.setMargins(v.getWidth(), v.getHeight(),(int)(event.getRawX() - (v.getWidth() / 2)), (int)(event.getRawY() - (v.getHeight())));
-            params.setMargins((int)event.getRawX() - v.getWidth()/2, (int)(event.getRawY() - v.getHeight()*1.5), (int)event.getRawX() - v.getWidth()/2, (int)(event.getRawY() - v.getHeight()*1.5));
-            v.setLayoutParams(params);
+                params.setMargins((int)event.getRawX() - v.getWidth()/2, (int)(event.getRawY() - v.getHeight()*1.5), (int)event.getRawX() - v.getWidth()/2, (int)(event.getRawY() - v.getHeight()*1.5));
+                v.setLayoutParams(params);
+            }
             return true;
         }
 
