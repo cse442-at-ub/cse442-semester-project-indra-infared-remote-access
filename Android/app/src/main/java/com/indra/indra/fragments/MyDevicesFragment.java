@@ -46,7 +46,7 @@ public class MyDevicesFragment extends Fragment {
             public void onClick(View view) {
                 //Used to switch between fragments in the current activity
 
-                if(piAddress == null){
+                if(((MainActivity) getActivity()).getRaspberryPiIP() == null){
                     ((MainActivity) getActivity()).editIpAddressDialog(getString(R.string.ip_missing_warning), inflatedFragment.findViewById(R.id.ip_address_display));
                 } else {
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -73,7 +73,7 @@ public class MyDevicesFragment extends Fragment {
             b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(piAddress == null){
+                    if(((MainActivity)getActivity()).getRaspberryPiIP() == null){
                         displayDialog(getString(R.string.ip_missing_warning), inflatedFragment);
                     } else {
                         ((MainActivity) getActivity()).openDeviceFragment(deviceClass);

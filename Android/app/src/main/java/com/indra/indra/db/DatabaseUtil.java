@@ -247,6 +247,24 @@ public class DatabaseUtil extends SQLiteOpenHelper {
     }
 
 
+    public boolean updateRemoteUsernames(String oldName, String newName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(REMOTE_COLUMN_USER, newName);
+        String whereClause = REMOTE_COLUMN_USER + "=?";
+        String[] whereArgs = new String[]{ oldName };
+        int affected = db.update(REMOTE_TABLE_NAME, values, whereClause, whereArgs);
+
+        values = new ContentValues();
+        values.put(IP_COLUMN_USER, newName);
+        whereClause = IP_COLUMN_USER + "=?";
+        whereArgs = new String[]{ oldName };
+
+        int affected1 = db.update(IP_TABLE_NAME, values, whereClause, whereArgs);
+
+        return affected > 0 || affected1 > 0;
+    }
+
     public IpAddressModel updateIpRow(String ip, String user){
         IpAddressModel ipModel = getIpForUser(user);
         SQLiteDatabase db = this.getWritableDatabase();
