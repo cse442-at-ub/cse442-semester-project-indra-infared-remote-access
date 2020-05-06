@@ -99,7 +99,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else if(task.isSuccessful()) {
                     Log.d("login", "username+password found");
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("username", nameUser);
                     startActivity(intent);
                 }
                 else {

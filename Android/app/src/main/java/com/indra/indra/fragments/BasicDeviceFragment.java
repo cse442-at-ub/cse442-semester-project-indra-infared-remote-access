@@ -56,7 +56,10 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
         View inflatedFragment = inflater.inflate(layoutId, container, false);
         MainActivity activity = (MainActivity)getActivity();
         this.remoteButtonDaemon = RemoteButtonHandlerDaemon.getInstance(activity.getClientSocket(), activity);
-
+        if(((MainActivity)getActivity()).easterEggOn()) {
+            LinearLayout ll = inflatedFragment.findViewById(R.id.bdLayout);
+            ll.setBackgroundResource(R.drawable.blackhs);
+        }
         ImageButton settingsButton =  inflatedFragment.findViewById(R.id.settingsButton);
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override

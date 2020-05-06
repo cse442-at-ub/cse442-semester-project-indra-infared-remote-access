@@ -157,6 +157,17 @@ public class ToolbarFragment extends Fragment {
             public void onClick(View view) {
                 String brandText = mBrandSearchContacts.getText().toString().toLowerCase(Locale.getDefault());
                 String modelText = mModelSearchContacts.getText().toString().toLowerCase(Locale.getDefault());
+                //Easter Egg code, don't send request to server if key phrase is inputted
+                if ((brandText + modelText).equalsIgnoreCase("Matthew Hertz Mode"))
+                {
+                    ((MainActivity) ToolbarFragment.super.getActivity()).activateEasterEgg();
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.fragment_container, new MyDevicesFragment());
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+                else
+                {
 
                 //send search text to server
                 Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
@@ -187,20 +198,14 @@ public class ToolbarFragment extends Fragment {
                                 String m = (String) d.get("device");
                                 contacts.add(new RemoteConfig(b + " " + m));
                             }
-                            adapter = new RemoteConfigListAdapter(getActivity(), R.layout.layout_remoteconfigs_listitem, contacts, "https://");
-                            updateRemoteList();
-                        }
-                        catch(JSONException e) {
-                            e.printStackTrace();
-                        }
 
-                    }
-                });
-                updateRemoteList(); //calls update twice to force UI thread to refresh remote list, avoid explicit multithreading
-                setAppBarState(0);
+                        }
+                    });
+                    updateRemoteList(); //calls update twice to force UI thread to refresh remote list, avoid explicit multithreading
+                    setAppBarState(0);
+                }
+
             }
-
-
         });
 
     }

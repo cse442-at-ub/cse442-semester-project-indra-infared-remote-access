@@ -91,6 +91,7 @@ public class SignupActivity extends AppCompatActivity {
                 if(task.isSuccessful()){
                     Log.d("Signup", "Signup complete!!");
                     Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+                    intent.putExtra("username", user);
                     startActivity(intent);
                 }
                 else {
