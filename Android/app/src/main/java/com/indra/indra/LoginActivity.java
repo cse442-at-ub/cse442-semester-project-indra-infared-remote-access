@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         Login = (Button) findViewById(R.id.loginButton);
         ErrorText = (TextView) findViewById(R.id.errorMessage);
 
-//       authenticateDB();
+       authenticateDB();
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,8 +79,9 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("login", "FAILED TO LOG IN");
         }
         final RemoteMongoClient mongoClient = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
+        Log.d("login", "GOT HERE");
         usersCol = mongoClient.getDatabase("indra-users").getCollection("users");
-
+        Log.d("login", "FINISHED WTF");
         // end MongoDB connection code
     }
     private void validate(String nameUser, String passUser)
