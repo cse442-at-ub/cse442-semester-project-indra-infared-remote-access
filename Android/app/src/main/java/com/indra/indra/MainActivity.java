@@ -368,4 +368,5 @@ public class MainActivity extends AppCompatActivity
         return currentUser;
     }
 
+    public void setCurrentUser(String newUser) {currentUser = newUser;}
 }

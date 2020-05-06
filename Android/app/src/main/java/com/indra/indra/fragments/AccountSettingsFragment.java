@@ -34,6 +34,7 @@ import com.mongodb.stitch.android.core.StitchAppClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoClient;
 import com.mongodb.stitch.android.services.mongodb.remote.RemoteMongoCollection;
 import com.mongodb.stitch.core.auth.providers.userapikey.UserApiKeyCredential;
+import com.mongodb.stitch.core.services.mongodb.remote.RemoteDeleteResult;
 import com.mongodb.stitch.core.services.mongodb.remote.RemoteUpdateResult;
 
 import org.bson.Document;
@@ -102,6 +103,8 @@ public class AccountSettingsFragment extends Fragment {
 
         authenticateDB();
 
+        DatabaseUtil util = new DatabaseUtil(getActivity());
+
         Button save = inflatedFragment.findViewById(R.id.edit_button_name);
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,14 +134,16 @@ public class AccountSettingsFragment extends Fragment {
                     }
                 });
 
-//                Intent intent = new Intent(String.valueOf(MainActivity.class));
-//                intent.putExtra("username", newName);
-//                startActivity(intent);
+                util.updateRemoteUsernames(currentUser, newName);
+                ((MainActivity) getActivity()).setCurrentUser(newName);
+
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.fragment_container, new MyDevicesFragment()).commit();
             }
         });
 
         TableLayout devicesTable = inflatedFragment.findViewById(R.id.account_settings_devices);
-        DatabaseUtil util = new DatabaseUtil(getActivity());
 
         ArrayList<RemoteModel> remoteModels = util.getDevicesForUser(currentUser);
 
@@ -175,7 +180,27 @@ public class AccountSettingsFragment extends Fragment {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                Document filterDoc = new Document().append("username", currentUser);
+
+                final Task<RemoteDeleteResult> deleteTask = usersCol.deleteOne(filterDoc);
+                deleteTask.addOnCompleteListener(new OnCompleteListener <RemoteDeleteResult> () {
+                    @Override
+                    public void onComplete(@NonNull Task <RemoteDeleteResult> task) {
+                        if (task.isSuccessful()) {
+                            long numDeleted = task.getResult().getDeletedCount();
+                            Log.d("app", String.format("successfully deleted %d documents", numDeleted));
+                        } else {
+                            Log.e("app", "failed to delete document with: ", task.getException());
+                        }
+                    }
+                });
+
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                // this will clear the back stack and displays no animation on the screen
+                fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                Intent intent = new Intent(((MainActivity) getActivity()), LoginActivity.class);
+                startActivity(intent);
             }
         });
         return inflatedFragment;
