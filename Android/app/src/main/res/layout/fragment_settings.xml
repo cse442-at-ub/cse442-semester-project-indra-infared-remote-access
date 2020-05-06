@@ -43,8 +43,10 @@
         android:text="Delete Remote"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.784"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activeDevice" />
+        app:layout_constraintTop_toBottomOf="@+id/activeDevice"
+        app:layout_constraintVertical_bias="0.27" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/settingsCloseButton"
@@ -61,13 +63,14 @@
         android:id="@+id/saveButton"
         android:layout_width="112dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="44dp"
-        android:layout_marginBottom="300dp"
+        android:layout_marginTop="256dp"
         android:backgroundTint="#4CAF50"
         android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/deleteButton"
-        app:layout_constraintTop_toBottomOf="@+id/reconfigureButton" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activeDevice"
+        app:layout_constraintVertical_bias="0.27" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
