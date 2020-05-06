@@ -3,9 +3,12 @@ package com.indra.indra.fragments;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 
 import androidx.annotation.NonNull;
@@ -19,7 +22,7 @@ import com.indra.indra.R;
 
 import java.util.ArrayList;
 
-public class RemoteFragment extends Fragment {
+public class RemoteFragment extends Fragment{
 
     @Nullable
     @Override
@@ -32,9 +35,8 @@ public class RemoteFragment extends Fragment {
         ArrayList<View> allButtons = ((TableLayout)(inflatedFragment.findViewById(R.id.bigButtonHolder))).getTouchables();
 //        for(View b : allButtons) {
 //           b.setOnClickListener(this);
-//        }
-
 
         return inflatedFragment;
     }
+
 }

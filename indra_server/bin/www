@@ -25,7 +25,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, '0.0.0.0');
 server.on('error', onError);
 server.on('listening', onListening);
 
@@ -92,12 +92,14 @@ function onListening() {
 var io = require("socket.io")();
 io.attach(server);
 
+var piSockets = {};
+
 // var raspberryPiId
 // // namespace pi connects to
 // const pi = io.of("/pi");
 // pi.on("connection", (socket) => {
 //   console.log("pi connected!\n");
-  
+
 //   raspberryPiId = socket.id;
 // });
 
@@ -113,8 +115,13 @@ io.on("connection", (socket) => {
   // This should be forwarded to the raspberry pi whose socket ID is stored in the 
   socket.on("search_request", (data) => {
     data['id'] = socket.id;
+    const ip = data['ipAddress'];
+
+
+    if (ip in piSockets) {
+      piSockets[ip].emit("search_request", data);
+    }
     console.log(data);
-    io.emit("search_request", data);
   });
 
 
@@ -133,28 +140,42 @@ io.on("connection", (socket) => {
     remote = data["remote"];
     button = data["button"];
     method = data["method"];
+    username = data["username"];
 
-    // emit button_press event to all connected clients
-    io.emit("button_press", {"remote": remote, "button": button, "method": method});
+    const ip = data['ipAddress'];
+
+
+    console.log('Sockets: ' + Object.keys(piSockets));
+    if (ip in piSockets) {
+      const payload = { "remote": remote, "button": button, "method": method, "username": username };
+      console.log("emit button_press: " + JSON.stringify(payload) + " to: " + ip);
+      piSockets[ip].emit("button_press", payload);
+    }
   });
 
   //---Handle LIRC config file request
   var brand, model, id;
 
   //-listen on file_request event from app and extract brand and model
-  socket.on("file_request", (data)=> {
+  socket.on("file_request", (data) => {
     data = JSON.parse(data);
     brand = data["brand"];
     model = data["model"];
     id = socket.id;
+    username = data['username'];
+
+    const ip = data['ipAddress'];
 
     // emit file_request event to the pi
-    io.emit("file_request",
-    {
-      "brand": brand,
-      "model": model,
-      "id": id
-    });
+    if (ip in piSockets) {
+      piSockets[ip].emit("file_request",
+        {
+          "brand": brand,
+          "model": model,
+          "id": id,
+          "username": username
+        });
+    }
   });
 
   //-handle config file response from pi and emit to app
@@ -162,11 +183,20 @@ io.on("connection", (socket) => {
     data = JSON.parse(data);
 
     io.emit("file_response",
-    {
-      "success": data["success"],
-      "file_contents": data["file_contents"],
-      "id": data["id"]
-    });
+      {
+        "success": data["success"],
+        "file_contents": data["file_contents"],
+        "id": data["id"]
+      });
   });
+});
+
+// Namespace for pi clients to connect to
+const piNsp = io.of('/pi');
+piNsp.on('connection', (socket) => {
+  console.log(socket.handshake.headers);
+  const ip = socket.handshake.headers['x-forwarded-for']; 
+  piSockets[ip] = socket;
+  socket.join(ip);
 });
 

@@ -90,66 +90,68 @@ public class AddDeviceFragment extends Fragment {
 
         remoteConfigText = inflatedFragment.findViewById(R.id.configText);
         final Button bAddDevice = inflatedFragment.findViewById(R.id.addDevice);
-        //send search text to server
-        Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
 
-        HashMap<String, String> jsonMap = new HashMap<>();
-        String[] inputs = deviceName.split("\\s+");
 
-        jsonMap.put("brand", inputs[0]);
+            //send search text to server
+            Socket clientSocket = ((MainActivity) getActivity()).getClientSocket();
+
+            HashMap<String, String> jsonMap = new HashMap<>();
+            String[] inputs = deviceName.split("\\s+");
+
+              jsonMap.put("brand", inputs[0]);
         jsonMap.put("model", inputs[1]);
         jsonMap.put("id", clientSocket.id());
+        jsonMap.put("ipAddress", ((MainActivity) getActivity()).getRaspberryPiIP());
+        jsonMap.put("username", ((MainActivity) getActivity()).getCurrentUser());
 
         JSONObject message = new JSONObject(jsonMap);
         clientSocket.emit("file_request", message.toString());
         Log.d("FileSearch", "Request emitted");
 
-        //recieve response
-        clientSocket.on("file_response", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.d("FileSearch", "Recieved response from server");
-                try {
-                    JSONObject jo = (JSONObject) args[0];
-                    JSONObject contents = (JSONObject) jo.get("file_contents");
-                    final String lircFileName = (String)((JSONArray) contents.get("name")).get(0);
-                    JSONObject buttonsList = (JSONObject) contents.get("buttons");
-                    final ArrayList<RemoteButtonModel> rbuttons = new ArrayList<RemoteButtonModel>();
+            //recieve response
+            clientSocket.on("file_response", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Log.d("FileSearch", "Recieved response from server");
+                    try {
+                        JSONObject jo = (JSONObject) args[0];
+                        JSONObject contents = (JSONObject) jo.get("file_contents");
+                        final String lircFileName = (String) ((JSONArray) contents.get("name")).get(0);
+                        JSONObject buttonsList = (JSONObject) contents.get("buttons");
+                        final ArrayList<RemoteButtonModel> rbuttons = new ArrayList<RemoteButtonModel>();
 
-                    Iterator<String> keysItr = buttonsList.keys();
-                    while(keysItr.hasNext()) {
-                         String key = keysItr.next();
-                         String dName = getDisplayNameFromLIRCName(key);
-                         rbuttons.add(new RemoteButtonModel(dName,key,000,000));
+                        Iterator<String> keysItr = buttonsList.keys();
+                        while (keysItr.hasNext()) {
+                            String key = keysItr.next();
+                            String dName = getDisplayNameFromLIRCName(key);
+                            rbuttons.add(new RemoteButtonModel(dName, key, 000, 000));
+                        }
+
+                        Log.d("FileSearch", "Finished processing response");
+                        updateRemoteConfig(lircFileName, rbuttons);
+                        bAddDevice.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                RemoteModel rm = new RemoteModel(deviceName, lircFileName);
+                                rm.setButtonModels(rbuttons);
+                                ((MainActivity) getActivity()).getDb().insertDeviceToDatabase(rm);
+                                getActivity().runOnUiThread(new Runnable() { //asks UI thread to change UI so handler thread does not conflict
+                                    @Override
+                                    public void run() {
+                                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                        ft.replace(R.id.fragment_container, new MyDevicesFragment());
+                                        ft.addToBackStack(null);
+                                        ft.commit();
+                                    }
+                                });
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
 
-                    Log.d("FileSearch", "Finished processing response");
-                    updateRemoteConfig(lircFileName, rbuttons);
-                    bAddDevice.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            RemoteModel rm = new RemoteModel(deviceName, lircFileName);
-                            rm.setButtonModels(rbuttons);
-                            ((MainActivity) getActivity()).getDb().insertDeviceToDatabase(rm);
-                            getActivity().runOnUiThread(new Runnable() { //asks UI thread to change UI so handler thread does not conflict
-                                @Override
-                                public void run() {
-                                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                                    ft.replace(R.id.fragment_container, new MyDevicesFragment());
-                                    ft.addToBackStack(null);
-                                    ft.commit();
-                                }
-                            });
-                        }
-                    });
                 }
-                catch(JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
+            });
 
         ((MainActivity) getActivity()).setMenuItemChecked(R.id.nav_add_device);
         return inflatedFragment;

@@ -151,120 +151,79 @@ public class ToolbarFragment extends Fragment {
     }
 
     private void setupContactList() {
-/*
-        //dummy list, currently default list displayed in search until search is executed
-        String[] remotes = {"directv/G051204",
-                "directv/H23",
-                "directv/HD20-100",
-                "directv/RC16",
-                "directv/RC24",
-                "directv/RC32",
-                "directv/RC64",
 
-                "lg/42H3000",
-                "lg/6710CDAL01G",
-                "lg/6710CDAP01B",
-                "lg/6711R1P072B",
-                "lg/AKB33871420",
-                "lg/AKB69680",
-                "lg/AKB72915207",
-                "lg/BD300",
-                "lg/CC470TW",
-                "lg/EC970W",
-                "lg/EV230",
-                "lg/MKJ32022805",
-                "lg/PBAFA0189A",
-                "lg/VF28",
-                "panasonic/EUR511224",
-                "panasonic/EUR511300",
-                "panasonic/LSSQ0225",
-                "panasonic/LSSQ0226",
-                "panasonic/N2QADC000006",
-                "panasonic/N2QAEC000012",
-                "panasonic/NV-F65_HQ",
-                "panasonic/NV-FJ610",
-                "panasonic/NV-HS830",
-                "panasonic/RAK-RX309W",
-                "panasonic/RC331401",
-                "panasonic/RC4346_01B ",
-                "panasonic/RCR_195_DC1",
-                "panasonic/RX-ED70",
-                "panasonic/SA-AK25",
-                "panasonic/SA-PM02",
-                "panasonic/TC-21E1R",
-                "panasonic/TNQ2637",
-                "panasonic/TNQ8E0437"};
-
-
-        final ArrayList<RemoteConfig> contacts = new ArrayList<>();
-        for (int i = 0; i < remotes.length; i++) {
-            contacts.add(new RemoteConfig(remotes[i]));
-        }
-
-
-*/
         submitSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String brandText = mBrandSearchContacts.getText().toString().toLowerCase(Locale.getDefault());
                 String modelText = mModelSearchContacts.getText().toString().toLowerCase(Locale.getDefault());
+                //Easter Egg code, don't send request to server if key phrase is inputted
+                if ((brandText + modelText).equalsIgnoreCase("Matthew Hertz Mode"))
+                {
+                    ((MainActivity) ToolbarFragment.super.getActivity()).activateEasterEgg();
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.fragment_container, new MyDevicesFragment());
+                    ft.addToBackStack(null);
+                    ft.commit();
+                }
+                else
+                {
+                    //send search text to server
+                    Socket clientSocket = ((MainActivity) getActivity()).getClientSocket();
 
-                //send search text to server
-                Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
+                    HashMap<String, String> jsonMap = new HashMap<>();
+                    jsonMap.put("brand", brandText);
+                    jsonMap.put("model", modelText);
+                    jsonMap.put("ipAddress", ((MainActivity) getActivity()).getRaspberryPiIP());
 
-                HashMap<String, String> jsonMap = new HashMap<>();
-                jsonMap.put("brand", brandText);
-                jsonMap.put("model", modelText);
+                    JSONObject message = new JSONObject(jsonMap);
+                    clientSocket.emit("search_request", message.toString());
+                    Log.d("Search", "Request emitted");
 
-                JSONObject message = new JSONObject(jsonMap);
-                clientSocket.emit("search_request", message.toString());
-                Log.d("Search", "Request emitted");
+                    //returning object from server
 
-                //returning object from server
+                    clientSocket.on("search_results", new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            Log.d("Search", "Recieved response from server");
+                            try {
 
-                clientSocket.on("search_results", new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        Log.d("Search", "Recieved response from server");
-                        try {
-
-                            JSONArray ja = (JSONArray) args[0];
-                            final ArrayList<RemoteConfig> contacts = new ArrayList<>();
-                            for(int i = 0; i < ja.length(); i++) {
-                                JSONObject d = ja.getJSONObject(i);
-                                String b = (String) d.get("brand");
-                                String m = (String) d.get("device");
-                                contacts.add(new RemoteConfig(b + " " + m));
+                                JSONArray ja = (JSONArray) args[0];
+                                final ArrayList<RemoteConfig> contacts = new ArrayList<>();
+                                for (int i = 0; i < ja.length(); i++) {
+                                    JSONObject d = ja.getJSONObject(i);
+                                    String b = (String) d.get("brand");
+                                    String m = (String) d.get("device");
+                                    contacts.add(new RemoteConfig(b + " " + m));
+                                }
+                                adapter = new RemoteConfigListAdapter(getActivity(), R.layout.layout_remoteconfigs_listitem, contacts, "https://");
+                                updateRemoteList();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            adapter = new RemoteConfigListAdapter(getActivity(), R.layout.layout_remoteconfigs_listitem, contacts, "https://");
-                            updateRemoteList();
-                        }
-                        catch(JSONException e) {
-                            e.printStackTrace();
-                        }
 
-                    }
-                });
-                updateRemoteList(); //calls update twice to force UI thread to refresh remote list, avoid explicit multithreading
-                setAppBarState(0);
+                        }
+                    });
+                    updateRemoteList(); //calls update twice to force UI thread to refresh remote list, avoid explicit multithreading
+                    setAppBarState(0);
+                }
+
             }
-
-
         });
 
     }
 
     /* Asks UI thread to update the remote list after response is successfully found
-    *  Without this, handler thread will throw a conflict as it request the same resource as UI thread
+     *  Without this, handler thread will throw a conflict as it request the same resource as UI thread
      */
     public void updateRemoteList()
     {
-       getActivity().runOnUiThread(new Runnable() { //asks UI thread to change UI so handler thread does not conflict
-           @Override
-           public void run() {
-               remotesList.setAdapter(adapter);
-           }
-       });
+        getActivity().runOnUiThread(new Runnable() { //asks UI thread to change UI so handler thread does not conflict
+            @Override
+            public void run() {
+                remotesList.setAdapter(adapter);
+            }
+        });
     }
 
 

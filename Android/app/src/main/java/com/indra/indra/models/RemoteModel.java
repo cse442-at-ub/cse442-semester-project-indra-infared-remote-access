@@ -23,7 +23,7 @@ public class RemoteModel {
     }
 
 
-    public RemoteModel(String displayName, String lircName, String user, int deviceId){
+    public RemoteModel(String displayName, String lircName, String user, long deviceId){
         this.displayName = displayName;
         this.lircName = lircName;
         this.user = user;

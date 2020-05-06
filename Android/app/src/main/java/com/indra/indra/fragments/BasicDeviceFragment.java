@@ -4,12 +4,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -29,7 +33,6 @@ import com.indra.indra.objects.RemoteButtonHandlerDaemon;
 import com.indra.indra.ui.buttons.RemoteButton;
 import com.indra.indra.ui.buttons.RemoteImageButton;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class BasicDeviceFragment extends Fragment implements View.OnTouchListener {
@@ -37,6 +40,7 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
     private RemoteModel baseDevice;
     private int layoutId;
     private RemoteButtonHandlerDaemon remoteButtonDaemon;
+    boolean drag = false;
 
     public BasicDeviceFragment(RemoteModel basicDevice, int layoutId) {
         _deviceName = basicDevice.getDisplayName();
@@ -52,7 +56,10 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
         View inflatedFragment = inflater.inflate(layoutId, container, false);
         MainActivity activity = (MainActivity)getActivity();
         this.remoteButtonDaemon = RemoteButtonHandlerDaemon.getInstance(activity.getClientSocket(), activity);
-
+        if(((MainActivity)getActivity()).easterEggOn()) {
+            LinearLayout ll = inflatedFragment.findViewById(R.id.bdLayout);
+            ll.setBackgroundResource(R.drawable.blackhs);
+        }
         ImageButton settingsButton =  inflatedFragment.findViewById(R.id.settingsButton);
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +69,7 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
 
-                transaction.replace(R.id.fragment_container, new SettingsFragment(_deviceName)).commit();
+                transaction.replace(R.id.fragment_container, new SettingsFragment(baseDevice)).commit();
             }
         });
 
@@ -93,18 +100,27 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
 //            }
 //        }
 
+        Switch btnMove = inflatedFragment.findViewById(R.id.moveBtnSwitch);
+        btnMove.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    drag = true;
+                }
+                else {
+                    drag = false;
+                }
+            }
+        });
+
         addButtonsToRemote(table);
 
-//        ArrayList<View> buttons = inflatedFragment.getTouchables();
+        ArrayList<View> buttons = inflatedFragment.getTouchables();
 
-
-//        for(View button : buttons){
-//
-//            if(button instanceof RemoteImageButton || button instanceof RemoteButton){
-//                button.setOnTouchListener(this);
-//            }
-//
-//        }
+        for(View button : buttons){
+            if(button instanceof RemoteImageButton || button instanceof RemoteButton){
+                button.setOnTouchListener(this);
+            }
+        }
 
 
         return inflatedFragment;
@@ -398,6 +414,17 @@ public class BasicDeviceFragment extends Fragment implements View.OnTouchListene
 
         int action = event.getActionMasked();
         int daemonAction;
+
+        if (action == MotionEvent.ACTION_MOVE) {
+            if (drag) {
+                TableRow.LayoutParams params = new TableRow.LayoutParams(v.getWidth(), v.getHeight());
+//            params.setMargins((int) event.getRawX() - v.getWidth() / 2, (int) (event.getRawY()) - v.getHeight(), (int) event.getRawX() - v.getWidth(), (int) (event.getRawY()) - v.getHeight());
+//            params.setMargins(v.getWidth(), v.getHeight(),(int)(event.getRawX() - (v.getWidth() / 2)), (int)(event.getRawY() - (v.getHeight())));
+                params.setMargins((int)event.getRawX() - v.getWidth()/2, (int)(event.getRawY() - v.getHeight()*1.5), (int)event.getRawX() - v.getWidth()/2, (int)(event.getRawY() - v.getHeight()*1.5));
+                v.setLayoutParams(params);
+            }
+            return true;
+        }
 
         if(action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP ||
                 action == MotionEvent.ACTION_CANCEL){

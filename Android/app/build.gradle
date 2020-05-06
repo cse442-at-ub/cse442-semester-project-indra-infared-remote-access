@@ -6,7 +6,12 @@ android {
     defaultConfig {
         applicationId "com.indra.indra"
         minSdkVersion 28
-        targetSdkVersion 29
+        //replaced targetSdkVerson with compileOptions{} for mongoDB, revert if compile issues occur
+        //targetSdkVersion 29
+        compileOptions {
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
+        }
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -33,4 +38,5 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
 
     implementation 'com.github.nkzawa:socket.io-client:0.6.0' //socket.io client
+    implementation 'org.mongodb:stitch-android-sdk:4.5.0'
 }

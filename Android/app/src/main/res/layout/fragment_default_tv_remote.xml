@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:scrollIndicators="bottom|right"
+    android:scrollbarAlwaysDrawHorizontalTrack="true"
+    android:scrollbarAlwaysDrawVerticalTrack="true"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
-    android:orientation="vertical">
+    android:verticalScrollbarPosition="right">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:background="@color/colorPrimaryDark"
-        >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/remote_fragment_remote_name"
@@ -21,6 +25,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_gravity="center"
+            android:layout_marginStart="5dp"
             android:background="@color/colorPrimaryDark"
             android:gravity="center_horizontal"
             android:text="@string/living_room_tv"
@@ -28,7 +33,6 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="30sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,234 +49,253 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Switch
+            android:id="@+id/moveBtnSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Drag (Alpha)"
+            android:textAlignment="textStart"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/settingsButton"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/remote_fragment_remote_name"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
     <TableLayout
+        android:id="@+id/bigButtonHolder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="50dp"
         android:layout_gravity="center"
-        android:id="@+id/bigButtonHolder">
+        android:paddingTop="50dp">
 
-        
+
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <com.indra.indra.ui.buttons.RemoteImageButton
-                app:lircName="KEY_POWER"
-                android:src="@drawable/ic_power_black"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/bPower"
                 android:layout_column="2"
                 android:backgroundTint="@android:color/holo_red_light"
-                android:id="@+id/bPower"
+                android:src="@drawable/ic_power_black"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:lircName="KEY_POWER"
 
                 />
-
         </TableRow>
-        
-        
+
+
         <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_1"
+                android:id="@+id/b1"
                 android:text="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:id="@+id/b1"
-                />
+                app:lircName="KEY_1" />
+
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_2"
+                android:id="@+id/b2"
                 android:text="2"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:id="@+id/b2"/>
+                app:lircName="KEY_2" />
+
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_3"
+                android:id="@+id/b3"
                 android:text="3"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:id="@+id/b3"/>
+                app:lircName="KEY_3" />
 
         </TableRow>
 
         <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_4"
+                android:id="@+id/b4"
                 android:text="4"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:id="@+id/b4"/>
+                app:lircName="KEY_4" />
+
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_5"
+                android:id="@+id/b5"
                 android:text="5"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:id="@+id/b5"/>
+                app:lircName="KEY_5" />
+
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_6"
+                android:id="@+id/b6"
                 android:text="6"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:id="@+id/b6"/>
+                app:lircName="KEY_6" />
 
         </TableRow>
-        
+
         <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_7"
+                android:id="@+id/b7"
                 android:text="7"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:id="@+id/b7"/>
+                app:lircName="KEY_7" />
+
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_8"
+                android:id="@+id/b8"
                 android:text="8"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:id="@+id/b8"/>
+                app:lircName="KEY_8" />
+
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_9"
+                android:id="@+id/b9"
                 android:text="9"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:id="@+id/b9"/>
+                app:lircName="KEY_9" />
 
         </TableRow>
 
 
         <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-            
+
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_0"
+                android:id="@+id/b0"
+                android:layout_column="1"
                 android:text="0"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:layout_column="1"
-                android:id="@+id/b0"/>
-            
+                app:lircName="KEY_0" />
+
 
         </TableRow>
 
 
         <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_VOLUMEUP"
+                android:id="@+id/bVolUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/ic_vol_chan_up"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:text="VOL"
-                android:id="@+id/bVolUp"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:lircName="KEY_VOLUMEUP" />
 
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_MUTE"
+                android:id="@+id/bMute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:text="MUTE"
-                android:id="@+id/bMute"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:lircName="KEY_MUTE" />
 
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_CHANNELUP"
+                android:id="@+id/bChUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/ic_vol_chan_up"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:text="CH"
-                android:id="@+id/bChUp"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:lircName="KEY_CHANNELUP" />
 
         </TableRow>
 
         <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_VOLUMEDOWN"
+                android:id="@+id/bVolDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableBottom="@drawable/ic_vol_chan_down"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:text="VOL"
-                android:id="@+id/bVolDown"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:lircName="KEY_VOLUMEDOWN" />
 
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_MENU"
+                android:id="@+id/bMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MENU"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:id="@+id/bMenu"/>
+                app:lircName="KEY_MENU" />
 
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_CHANNELDOWN"
+                android:id="@+id/bChDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableBottom="@drawable/ic_vol_chan_down"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:text="CH"
-                android:id="@+id/bChDown"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                app:lircName="KEY_CHANNELDOWN" />
 
         </TableRow>
 
 
         <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
-                <com.indra.indra.ui.buttons.RemoteImageButton
-                    app:lircName="KEY_UP"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_arrow_up_black"
-                    android:layout_column="1"
-                    android:id="@+id/bArrowUp"/>
-        </TableRow>
-
-
-        <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <com.indra.indra.ui.buttons.RemoteImageButton
-                app:lircName="KEY_LEFT"
-                android:src="@drawable/ic_arrow_left_black"
+                android:id="@+id/bArrowUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:src="@drawable/ic_arrow_up_black"
+                app:lircName="KEY_UP" />
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.indra.indra.ui.buttons.RemoteImageButton
+                android:id="@+id/bArrowLeft"
                 android:layout_height="match_parent"
-                android:id="@+id/bArrowLeft"/>
+                android:src="@drawable/ic_arrow_left_black"
+                app:lircName="KEY_LEFT" />
 
             <com.indra.indra.ui.buttons.RemoteButton
-                app:lircName="KEY_OK"
+                android:id="@+id/bEnter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_column="1"
                 android:drawableTop="@drawable/ic_enter_black"
                 android:text="ENTER"
-                android:layout_column="1"
-                android:id="@+id/bEnter"/>
+                app:lircName="KEY_OK" />
 
             <com.indra.indra.ui.buttons.RemoteImageButton
-                app:lircName="KEY_RIGHT"
-                android:src="@drawable/ic_arrow_right_black"
+                android:id="@+id/bArrowRight"
                 android:layout_height="match_parent"
-                android:id="@+id/bArrowRight"/>
+                android:src="@drawable/ic_arrow_right_black"
+                app:lircName="KEY_RIGHT" />
         </TableRow>
 
 
         <TableRow
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
             <com.indra.indra.ui.buttons.RemoteImageButton
-                app:lircName="KEY_DOWN"
+                android:id="@+id/bArrowDown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_down_black"
                 android:layout_column="1"
-                android:id="@+id/bArrowDown"/>
+                android:src="@drawable/ic_arrow_down_black"
+                app:lircName="KEY_DOWN" />
         </TableRow>
 
     </TableLayout>
