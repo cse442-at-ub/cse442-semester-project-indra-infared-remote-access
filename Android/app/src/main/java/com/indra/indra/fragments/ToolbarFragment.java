@@ -168,35 +168,38 @@ public class ToolbarFragment extends Fragment {
                 }
                 else
                 {
+                    //send search text to server
+                    Socket clientSocket = ((MainActivity) getActivity()).getClientSocket();
 
-                //send search text to server
-                Socket clientSocket = ((MainActivity)getActivity()).getClientSocket();
+                    HashMap<String, String> jsonMap = new HashMap<>();
+                    jsonMap.put("brand", brandText);
+                    jsonMap.put("model", modelText);
+                    jsonMap.put("ipAddress", ((MainActivity) getActivity()).getRaspberryPiIP());
 
-                HashMap<String, String> jsonMap = new HashMap<>();
-                jsonMap.put("brand", brandText);
-                jsonMap.put("model", modelText);
-                jsonMap.put("ipAddress", ((MainActivity) getActivity()).getRaspberryPiIP());
-                jsonMap.put("username", ((MainActivity) getActivity()).getCurrentUser());
+                    JSONObject message = new JSONObject(jsonMap);
+                    clientSocket.emit("search_request", message.toString());
+                    Log.d("Search", "Request emitted");
 
-                JSONObject message = new JSONObject(jsonMap);
-                clientSocket.emit("search_request", message.toString());
-                Log.d("Search", "Request emitted");
+                    //returning object from server
 
-                //returning object from server
+                    clientSocket.on("search_results", new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            Log.d("Search", "Recieved response from server");
+                            try {
 
-                clientSocket.on("search_results", new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        Log.d("Search", "Recieved response from server");
-                        try {
-
-                            JSONArray ja = (JSONArray) args[0];
-                            final ArrayList<RemoteConfig> contacts = new ArrayList<>();
-                            for(int i = 0; i < ja.length(); i++) {
-                                JSONObject d = ja.getJSONObject(i);
-                                String b = (String) d.get("brand");
-                                String m = (String) d.get("device");
-                                contacts.add(new RemoteConfig(b + " " + m));
+                                JSONArray ja = (JSONArray) args[0];
+                                final ArrayList<RemoteConfig> contacts = new ArrayList<>();
+                                for (int i = 0; i < ja.length(); i++) {
+                                    JSONObject d = ja.getJSONObject(i);
+                                    String b = (String) d.get("brand");
+                                    String m = (String) d.get("device");
+                                    contacts.add(new RemoteConfig(b + " " + m));
+                                }
+                                adapter = new RemoteConfigListAdapter(getActivity(), R.layout.layout_remoteconfigs_listitem, contacts, "https://");
+                                updateRemoteList();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
 
                         }
@@ -211,16 +214,16 @@ public class ToolbarFragment extends Fragment {
     }
 
     /* Asks UI thread to update the remote list after response is successfully found
-    *  Without this, handler thread will throw a conflict as it request the same resource as UI thread
+     *  Without this, handler thread will throw a conflict as it request the same resource as UI thread
      */
     public void updateRemoteList()
     {
-       getActivity().runOnUiThread(new Runnable() { //asks UI thread to change UI so handler thread does not conflict
-           @Override
-           public void run() {
-               remotesList.setAdapter(adapter);
-           }
-       });
+        getActivity().runOnUiThread(new Runnable() { //asks UI thread to change UI so handler thread does not conflict
+            @Override
+            public void run() {
+                remotesList.setAdapter(adapter);
+            }
+        });
     }
 
 
