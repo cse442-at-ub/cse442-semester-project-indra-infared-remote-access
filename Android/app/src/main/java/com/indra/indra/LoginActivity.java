@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
         Login = (Button) findViewById(R.id.loginButton);
         ErrorText = (TextView) findViewById(R.id.errorMessage);
 
-//       authenticateDB();
+       authenticateDB();
 
         Login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +63,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void authenticateDB() {
         //mongoDB connection - from MongoDB official 'how to connect java(android)'
-        final StitchAppClient client = Stitch.initializeDefaultAppClient(mongoAppId);
+        StitchAppClient client;
+        try {
+            client = Stitch.getDefaultAppClient();
+        }
+        catch(Exception e) {
+            client = Stitch.initializeDefaultAppClient(mongoAppId);
+        }
+
         client.getAuth().loginWithCredential(new UserApiKeyCredential(mongoAPIKey));
         if(client.getAuth().isLoggedIn()) {
             Log.d("login", "logged into db");
@@ -72,8 +79,9 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("login", "FAILED TO LOG IN");
         }
         final RemoteMongoClient mongoClient = client.getServiceClient(RemoteMongoClient.factory, "mongodb-atlas");
+        Log.d("login", "GOT HERE");
         usersCol = mongoClient.getDatabase("indra-users").getCollection("users");
-
+        Log.d("login", "FINISHED WTF");
         // end MongoDB connection code
     }
     private void validate(String nameUser, String passUser)
@@ -91,7 +99,9 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else if(task.isSuccessful()) {
                     Log.d("login", "username+password found");
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("username", nameUser);
                     startActivity(intent);
                 }
                 else {

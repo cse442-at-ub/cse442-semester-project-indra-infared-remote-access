@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,7 +37,10 @@ public class MyDevicesFragment extends Fragment {
         View inflatedFragment = inflater.inflate(R.layout.fragment_my_devices, container, false);
         FloatingActionButton fab = inflatedFragment.findViewById(R.id.fab);
         String piAddress = ((MainActivity) getActivity()).getRaspberryPiIP();
-
+        if(((MainActivity)this.getActivity()).easterEggOn()) {
+            RelativeLayout rl  = inflatedFragment.findViewById(R.id.mdLayout);
+            rl.setBackgroundResource(R.drawable.bluehs);
+        }
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
