@@ -28,6 +28,8 @@ def my_message(data):
         print(data)
         data = json.loads(data)
 
+    username = data['username']
+
     if username in authorized_users:
         print("Message received from server with ", data)
         print(data['remote'])
